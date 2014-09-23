@@ -1,0 +1,294 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>rissile.wo.data_generator &mdash; Rissile 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Rissile 0.0.1 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Rissile 0.0.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for rissile.wo.data_generator</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+
+
+<span class="n">__author__</span><span class="o">=</span><span class="s">&quot;K. Kulikov&quot;</span>
+<span class="n">__date__</span> <span class="o">=</span><span class="s">&quot;$03.07.2014 15:19:08$&quot;</span>
+
+
+<div class="viewcode-block" id="Generator"><a class="viewcode-back" href="../../../parts/rissile/wo/data_generator.html#rissile.wo.data_generator.Generator">[docs]</a><span class="k">class</span> <span class="nc">Generator</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Каждый генератор данных для WorldObject должен иметь идентификатор.</span>
+<span class="sd">    Класс описывает интерфейс взаимодействия с этим свойством.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Generator.__init__"><a class="viewcode-back" href="../../../parts/rissile/wo/data_generator.html#rissile.wo.data_generator.Generator.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param id: идентификатор генератора.</span>
+<span class="sd">        :type id: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="nb">id</span>
+
+</div>
+<div class="viewcode-block" id="Generator.id"><a class="viewcode-back" href="../../../parts/rissile/wo/data_generator.html#rissile.wo.data_generator.Generator.id">[docs]</a>    <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: идентификатор генератора.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span>
+
+</div></div>
+<div class="viewcode-block" id="ValueGenerator"><a class="viewcode-back" href="../../../parts/rissile/wo/data_generator.html#rissile.wo.data_generator.ValueGenerator">[docs]</a><span class="k">class</span> <span class="nc">ValueGenerator</span><span class="p">(</span><span class="n">Generator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Класс описывает интерфейс генератора значений.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="ValueGenerator.__init__"><a class="viewcode-back" href="../../../parts/rissile/wo/data_generator.html#rissile.wo.data_generator.ValueGenerator.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param params: данные, необходимые для инициализации генератора.</span>
+<span class="sd">        :type params: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Generator</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_params</span> <span class="o">=</span> <span class="n">params</span>
+        
+        </div>
+<div class="viewcode-block" id="ValueGenerator.__iter__"><a class="viewcode-back" href="../../../parts/rissile/wo/data_generator.html#rissile.wo.data_generator.ValueGenerator.__iter__">[docs]</a>    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Генерируйте значения в этой функции.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+</div></div>
+<div class="viewcode-block" id="ValueConstGenerator"><a class="viewcode-back" href="../../../parts/rissile/wo/data_generator.html#rissile.wo.data_generator.ValueConstGenerator">[docs]</a><span class="k">class</span> <span class="nc">ValueConstGenerator</span><span class="p">(</span><span class="n">ValueGenerator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Класс генерирует постоянную величину.</span>
+<span class="sd">    Словарь входных значений должен содердать одну величину &#39;value&#39;: float.</span>
+
+<span class="sd">    &gt;&gt;&gt; value_const = ValueConstGenerator(&#39;const generator&#39;, {&#39;value&#39;: -100.34})</span>
+<span class="sd">    &gt;&gt;&gt; for value in value_const: print(value)</span>
+<span class="sd">    -100.34</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="ValueConstGenerator.value"><a class="viewcode-back" href="../../../parts/rissile/wo/data_generator.html#rissile.wo.data_generator.ValueConstGenerator.value">[docs]</a>    <span class="k">def</span> <span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: значение величины.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
+
+</div>
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">yield</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">())</span>
+
+</div>
+<div class="viewcode-block" id="ValueRangeGenerator"><a class="viewcode-back" href="../../../parts/rissile/wo/data_generator.html#rissile.wo.data_generator.ValueRangeGenerator">[docs]</a><span class="k">class</span> <span class="nc">ValueRangeGenerator</span><span class="p">(</span><span class="n">ValueGenerator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Класс генерирует набор значений начиная с левой границы, с заданным шагом, пока</span>
+<span class="sd">    не будет превышена правая граница. Словарь входных параметров должен содержать</span>
+<span class="sd">    величины: &#39;begin&#39;: float, &#39;right_border&#39;: float, &#39;step: float.</span>
+
+<span class="sd">    &gt;&gt;&gt; value_range = ValueRangeGenerator(&#39;range_generator&#39;, {&#39;begin&#39;: 0, &#39;right_border&#39;: 10, &#39;step&#39;: 3})</span>
+<span class="sd">    &gt;&gt;&gt; for value in value_range: print(value)</span>
+<span class="sd">    0</span>
+<span class="sd">    3</span>
+<span class="sd">    6</span>
+<span class="sd">    9</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="ValueRangeGenerator.begin"><a class="viewcode-back" href="../../../parts/rissile/wo/data_generator.html#rissile.wo.data_generator.ValueRangeGenerator.begin">[docs]</a>    <span class="k">def</span> <span class="nf">begin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: левая граница интервала, с которого начинается генерирования чисел.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">[</span><span class="s">&#39;begin&#39;</span><span class="p">]</span>
+
+</div>
+<div class="viewcode-block" id="ValueRangeGenerator.right_border"><a class="viewcode-back" href="../../../parts/rissile/wo/data_generator.html#rissile.wo.data_generator.ValueRangeGenerator.right_border">[docs]</a>    <span class="k">def</span> <span class="nf">right_border</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: правая граница интервала, по превышению которой генерирование чисел заканчивается.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">[</span><span class="s">&#39;right_border&#39;</span><span class="p">]</span>
+
+</div>
+<div class="viewcode-block" id="ValueRangeGenerator.step"><a class="viewcode-back" href="../../../parts/rissile/wo/data_generator.html#rissile.wo.data_generator.ValueRangeGenerator.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: шаг генерирования величин.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">[</span><span class="s">&#39;step&#39;</span><span class="p">]</span>
+
+</div>
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">next</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span>
+        <span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+        <span class="k">while</span> <span class="nb">next</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_border</span><span class="p">():</span>
+            <span class="k">yield</span><span class="p">(</span><span class="nb">next</span><span class="p">)</span>
+            <span class="nb">next</span> <span class="o">+=</span> <span class="n">step</span>
+
+</div>
+<div class="viewcode-block" id="ValueRandomGenerator"><a class="viewcode-back" href="../../../parts/rissile/wo/data_generator.html#rissile.wo.data_generator.ValueRandomGenerator">[docs]</a><span class="k">class</span> <span class="nc">ValueRandomGenerator</span><span class="p">(</span><span class="n">ValueGenerator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Класс генерирует случайное значение из заданного отрезка.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="ValueRandomGenerator.left_border"><a class="viewcode-back" href="../../../parts/rissile/wo/data_generator.html#rissile.wo.data_generator.ValueRandomGenerator.left_border">[docs]</a>    <span class="k">def</span> <span class="nf">left_border</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: левую границу для случайного значения.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">[</span><span class="s">&#39;left&#39;</span><span class="p">]</span>
+
+</div>
+<div class="viewcode-block" id="ValueRandomGenerator.right_border"><a class="viewcode-back" href="../../../parts/rissile/wo/data_generator.html#rissile.wo.data_generator.ValueRandomGenerator.right_border">[docs]</a>    <span class="k">def</span> <span class="nf">right_border</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: правую границу для случайного значения.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">[</span><span class="s">&#39;right&#39;</span><span class="p">]</span>
+
+</div>
+<div class="viewcode-block" id="ValueRandomGenerator.interval"><a class="viewcode-back" href="../../../parts/rissile/wo/data_generator.html#rissile.wo.data_generator.ValueRandomGenerator.interval">[docs]</a>    <span class="k">def</span> <span class="nf">interval</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: длину отрезка, которым будут ограничены генерируемые значения.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_border</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">left_border</span><span class="p">()</span>
+</div>
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">random</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">left</span><span class="p">()</span> <span class="o">+</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="WorldObjectInitDataGenerator"><a class="viewcode-back" href="../../../parts/rissile/wo/data_generator.html#rissile.wo.data_generator.WorldObjectInitDataGenerator">[docs]</a><span class="k">class</span> <span class="nc">WorldObjectInitDataGenerator</span><span class="p">(</span><span class="n">Generator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Класс генерирует наборы значений вида {&#39;id&#39;: value, ...}.</span>
+
+<span class="sd">    &gt;&gt;&gt; data = WorldObjectInitDataGenerator(&#39;data&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; data.set_value(ValueConstGenerator(&#39;X&#39;, {&#39;value&#39;: 1}))</span>
+<span class="sd">    &gt;&gt;&gt; data.set_value(ValueRangeGenerator(&#39;Y&#39;, {&#39;begin&#39;: 0, &#39;right_border&#39;: 2, &#39;step&#39;: 1}))</span>
+<span class="sd">    &gt;&gt;&gt; for init_data in data: print(init_data)</span>
+<span class="sd">    {&#39;Y&#39;: 0, &#39;X&#39;: 1}</span>
+<span class="sd">    {&#39;Y&#39;: 1, &#39;X&#39;: 1}</span>
+<span class="sd">    {&#39;Y&#39;: 2, &#39;X&#39;: 1}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+        <span class="n">Generator</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_values</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        
+<div class="viewcode-block" id="WorldObjectInitDataGenerator.set_value"><a class="viewcode-back" href="../../../parts/rissile/wo/data_generator.html#rissile.wo.data_generator.WorldObjectInitDataGenerator.set_value">[docs]</a>    <span class="k">def</span> <span class="nf">set_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Добавляет значение для генерирования.</span>
+
+<span class="sd">        :param value: свойство, значение которого необходимо генерировать.</span>
+<span class="sd">        :type value: ValueGenerator или WorldObjectInitDataGenerator</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="WorldObjectInitDataGenerator._fill"><a class="viewcode-back" href="../../../parts/rissile/wo/data_generator.html#rissile.wo.data_generator.WorldObjectInitDataGenerator._fill">[docs]</a>    <span class="k">def</span> <span class="nf">_fill</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">next</span><span class="p">,</span> <span class="n">nexts</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Функция осуществляет перебор зарегистрированных значения.</span>
+
+<span class="sd">        :param next: используется для формирования текущего генерируемого набора.</span>
+<span class="sd">        :type next: dict</span>
+<span class="sd">        :param nexts: набор генерируемых величин.</span>
+<span class="sd">        :type nexts: list(dict, dict, ...)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Чтобы перебрать элементы нескольких массивов, необходимо</span>
+        <span class="c"># выполнить конструцию вида:</span>
+        <span class="c"># for item1 in items1:</span>
+        <span class="c">#     for item2 in items2:</span>
+        <span class="c">#         ...</span>
+        <span class="c">#             do_somethig(item1, item2, ...)</span>
+        <span class="c"># Здесь соответствующая вложенность реализуется при помощи рекурсии.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">value_generator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">value_generator</span><span class="p">:</span>
+                <span class="nb">next</span><span class="p">[</span><span class="n">value_generator</span><span class="o">.</span><span class="n">id</span><span class="p">()]</span> <span class="o">=</span> <span class="n">value</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">value_generator</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_fill</span><span class="p">(</span><span class="nb">next</span><span class="p">,</span> <span class="n">nexts</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">value_generator</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># Так функция работает с ссылкой на один и тот же next,</span>
+            <span class="c"># чтобы не затирались старые значения, необходимо сделать её копию.</span>
+            <span class="kn">import</span> <span class="nn">copy</span>
+            <span class="n">nexts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="nb">next</span><span class="p">))</span>
+
+</div>
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">nexts</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="nb">next</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fill</span><span class="p">(</span><span class="nb">next</span><span class="p">,</span> <span class="n">nexts</span><span class="p">)</span>
+        <span class="k">for</span> <span class="nb">next</span> <span class="ow">in</span> <span class="n">nexts</span><span class="p">:</span>
+            <span class="k">yield</span><span class="p">(</span><span class="nb">next</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Rissile 0.0.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, ОАО МКБ &#34;Факел&#34;.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,562 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>rissile.tools.quaternion &mdash; Rissile 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Rissile 0.0.1 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Rissile 0.0.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for rissile.tools.quaternion</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+
+<span class="n">__author__</span><span class="o">=</span><span class="s">&quot;K. Kulikov&quot;</span>
+<span class="n">__date__</span> <span class="o">=</span><span class="s">&quot;$Jun 06, 2014 10:30:15 AM$&quot;</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Модуль quaternion</span>
+<span class="sd">=================</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="kn">from</span> <span class="nn">rissile.tools.angles</span> <span class="kn">import</span> <span class="n">Radian</span><span class="p">,</span> <span class="n">Degree</span>
+<span class="kn">from</span> <span class="nn">rissile.tools.vector</span> <span class="kn">import</span> <span class="n">Vector</span>
+<span class="kn">from</span> <span class="nn">rissile.tools</span> <span class="kn">import</span> <span class="n">assistants</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+
+<div class="viewcode-block" id="Quaternion"><a class="viewcode-back" href="../../../parts/rissile/tools/quaternion.html#rissile.tools.quaternion.Quaternion">[docs]</a><span class="k">class</span> <span class="nc">Quaternion</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Реализация кватерниона выполнена по материалам:</span>
+<span class="sd">    http://www.ogre3d.org </span>
+<span class="sd">    http://www.cprogramming.com/tutorial/3d/quaternions.html</span>
+<span class="sd">    http://www.gamedev.net/page/resources/_/reference/programming/math-and-physics/</span>
+<span class="sd">    http://www.j3d.org/</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">ZERO</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">Quaternion</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">IDENTITY</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">Quaternion</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Quaternion.from_axis_and_angle"><a class="viewcode-back" href="../../../parts/rissile/tools/quaternion.html#rissile.tools.quaternion.Quaternion.from_axis_and_angle">[docs]</a>    <span class="k">def</span> <span class="nf">from_axis_and_angle</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Функция конструирует нормализованный кватерниона из оси и угла.</span>
+
+<span class="sd">        &gt;&gt;&gt; q0 = Quaternion.from_axis_and_angle(Vector(1.0, 0.0, 0.0), Radian(math.pi / 2))</span>
+<span class="sd">        &gt;&gt;&gt; print(q0)</span>
+<span class="sd">        (0.707106781187, 0.707106781187, 0.0, 0.0)</span>
+<span class="sd">        &gt;&gt;&gt; q1 = Quaternion.from_axis_and_angle(Vector(1.0, 0.0, 0.0), Degree(90.0))</span>
+<span class="sd">        &gt;&gt;&gt; print(q1)</span>
+<span class="sd">        (0.707106781187, 0.707106781187, 0.0, 0.0)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="n">angle</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">Radian</span><span class="p">)</span> <span class="k">else</span> <span class="n">angle</span><span class="o">.</span><span class="n">to_radian</span><span class="p">())</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">sin</span><span class="p">()</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">cos</span><span class="p">()</span>
+        <span class="n">vector</span> <span class="o">=</span> <span class="n">axis</span><span class="o">.</span><span class="n">normalized</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">Quaternion</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">s</span> <span class="o">*</span> <span class="n">vector</span><span class="o">.</span><span class="n">x</span><span class="p">(),</span> <span class="n">s</span> <span class="o">*</span> <span class="n">vector</span><span class="o">.</span><span class="n">y</span><span class="p">(),</span> <span class="n">s</span> <span class="o">*</span> <span class="n">vector</span><span class="o">.</span><span class="n">z</span><span class="p">())</span><span class="o">.</span><span class="n">normalized</span><span class="p">()</span>
+
+</div>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">around_x</span><span class="p">(</span><span class="n">angle</span><span class="p">):</span>        
+        <span class="k">return</span> <span class="n">Quaternion</span><span class="o">.</span><span class="n">from_axis_and_angle</span><span class="p">(</span><span class="n">Vector</span><span class="o">.</span><span class="n">X_UNIT</span><span class="p">(),</span> <span class="n">angle</span><span class="p">)</span>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">around_y</span><span class="p">(</span><span class="n">angle</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Quaternion</span><span class="o">.</span><span class="n">from_axis_and_angle</span><span class="p">(</span><span class="n">Vector</span><span class="o">.</span><span class="n">Y_UNIT</span><span class="p">(),</span> <span class="n">angle</span><span class="p">)</span>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">around_z</span><span class="p">(</span><span class="n">angle</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Quaternion</span><span class="o">.</span><span class="n">from_axis_and_angle</span><span class="p">(</span><span class="n">Vector</span><span class="o">.</span><span class="n">Z_UNIT</span><span class="p">(),</span> <span class="n">angle</span><span class="p">)</span>      
+
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_w</span> <span class="o">=</span> <span class="n">w</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">=</span> <span class="n">y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_z</span> <span class="o">=</span> <span class="n">z</span>
+
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;({w}, {x}, {y}, {z})&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">w</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_w</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_z</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_z</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">()[</span><span class="n">i</span><span class="p">]</span>
+
+
+    <span class="k">def</span> <span class="nf">vector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Vector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_z</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">scalar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w</span>
+
+
+<div class="viewcode-block" id="Quaternion.length_squared"><a class="viewcode-back" href="../../../parts/rissile/tools/quaternion.html#rissile.tools.quaternion.Quaternion.length_squared">[docs]</a>    <span class="k">def</span> <span class="nf">length_squared</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Возвращает квадратичную длину кватерниона.</span>
+
+<span class="sd">        &gt;&gt;&gt; q0 = Quaternion(1.0, 2.0, 0.0, -1.0)</span>
+<span class="sd">        &gt;&gt;&gt; print(q0.length_squared())</span>
+<span class="sd">        6.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_z</span> <span class="o">**</span> <span class="mi">2</span>
+
+</div>
+<div class="viewcode-block" id="Quaternion.length"><a class="viewcode-back" href="../../../parts/rissile/tools/quaternion.html#rissile.tools.quaternion.Quaternion.length">[docs]</a>    <span class="k">def</span> <span class="nf">length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Возвращает длину кватерниона.</span>
+
+<span class="sd">        &gt;&gt;&gt; q0 = Quaternion(4.0, 2.0, 2.0, 1.0)</span>
+<span class="sd">        &gt;&gt;&gt; print(q0.length())</span>
+<span class="sd">        5.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">length_squared</span><span class="p">()</span> <span class="o">**</span> <span class="mf">0.5</span>
+
+</div>
+<div class="viewcode-block" id="Quaternion.normalize"><a class="viewcode-back" href="../../../parts/rissile/tools/quaternion.html#rissile.tools.quaternion.Quaternion.normalize">[docs]</a>    <span class="k">def</span> <span class="nf">normalize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Производит приведение кватерниона к еденичной длине.</span>
+
+<span class="sd">        &gt;&gt;&gt; q0 = Quaternion(6.0, 0.0, 0.0, 0.0)</span>
+<span class="sd">        &gt;&gt;&gt; q0.length()</span>
+<span class="sd">        6.0</span>
+<span class="sd">        &gt;&gt;&gt; q0.normalize()</span>
+<span class="sd">        &gt;&gt;&gt; q0.length()</span>
+<span class="sd">        1.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">length</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_w</span> <span class="o">/=</span> <span class="n">length</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">/=</span> <span class="n">length</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">/=</span> <span class="n">length</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_z</span> <span class="o">/=</span> <span class="n">length</span>            
+
+</div>
+<div class="viewcode-block" id="Quaternion.normalized"><a class="viewcode-back" href="../../../parts/rissile/tools/quaternion.html#rissile.tools.quaternion.Quaternion.normalized">[docs]</a>    <span class="k">def</span> <span class="nf">normalized</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Возвращает копию текущего нормализованного кватерниона.</span>
+
+<span class="sd">        &gt;&gt;&gt; q0 = Quaternion(6.0, 0.0, 0.0, 0.0)</span>
+<span class="sd">        &gt;&gt;&gt; q1 = q0.normalized()</span>
+<span class="sd">        &gt;&gt;&gt; print(q1)</span>
+<span class="sd">        (1.0, 0.0, 0.0, 0.0)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">import</span> <span class="nn">copy</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">res</span>    
+
+</div>
+<div class="viewcode-block" id="Quaternion.conjugate"><a class="viewcode-back" href="../../../parts/rissile/tools/quaternion.html#rissile.tools.quaternion.Quaternion.conjugate">[docs]</a>    <span class="k">def</span> <span class="nf">conjugate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Возвращает кватернион, сопряжённый по отношению к текущему.</span>
+
+<span class="sd">        &gt;&gt;&gt; q0 = Quaternion(1.5, 0.7, 0.3, -1.3)</span>
+<span class="sd">        &gt;&gt;&gt; q1 = q0.conjugate()</span>
+<span class="sd">        &gt;&gt;&gt; print(q1)</span>
+<span class="sd">        (1.5, -0.7, -0.3, 1.3)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Quaternion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_w</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_z</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="Quaternion.__neg__"><a class="viewcode-back" href="../../../parts/rissile/tools/quaternion.html#rissile.tools.quaternion.Quaternion.__neg__">[docs]</a>    <span class="k">def</span> <span class="nf">__neg__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Возвращает кватернион, с векторной и скалярной компонентами,</span>
+<span class="sd">        противоположными текущему.</span>
+
+<span class="sd">        &gt;&gt;&gt; q0 = Quaternion(-1.0, 1.0, 0.0, 1.0)</span>
+<span class="sd">        &gt;&gt;&gt; q1 = -q0</span>
+<span class="sd">        &gt;&gt;&gt; print(q1)</span>
+<span class="sd">        (1.0, -1.0, -0.0, -1.0)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Quaternion</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_w</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_z</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="Quaternion.__add__"><a class="viewcode-back" href="../../../parts/rissile/tools/quaternion.html#rissile.tools.quaternion.Quaternion.__add__">[docs]</a>    <span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Возвращает кватернион, полученный путем покомпонентного сложения</span>
+<span class="sd">        текущего и переданного кватернионов.</span>
+
+<span class="sd">        &gt;&gt;&gt; q0 = Quaternion(2.0, -1.0, 1.0, 4.0)</span>
+<span class="sd">        &gt;&gt;&gt; q1 = Quaternion(-1.0, 3.0, 2.0, -1.0)</span>
+<span class="sd">        &gt;&gt;&gt; q2 = q0 + q1</span>
+<span class="sd">        &gt;&gt;&gt; print(q2)</span>
+<span class="sd">        (1.0, 2.0, 3.0, 3.0)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Quaternion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_w</span> <span class="o">+</span> <span class="n">q</span><span class="o">.</span><span class="n">_w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">+</span> <span class="n">q</span><span class="o">.</span><span class="n">_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">+</span> <span class="n">q</span><span class="o">.</span><span class="n">_y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_z</span> <span class="o">+</span> <span class="n">q</span><span class="o">.</span><span class="n">_z</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="Quaternion.__sub__"><a class="viewcode-back" href="../../../parts/rissile/tools/quaternion.html#rissile.tools.quaternion.Quaternion.__sub__">[docs]</a>    <span class="k">def</span> <span class="nf">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Возвращает кватернион, полученный путём покомпонетного вычитания</span>
+<span class="sd">        текущего и переданного кватернионов.</span>
+<span class="sd">        </span>
+<span class="sd">        &gt;&gt;&gt; q0 = Quaternion(4.0, 3.0, -1.0, 4.0)</span>
+<span class="sd">        &gt;&gt;&gt; q1 = Quaternion(-1.0, 3.0, 1.0, 2.0)</span>
+<span class="sd">        &gt;&gt;&gt; q2 = q0 - q1</span>
+<span class="sd">        &gt;&gt;&gt; print(q2)</span>
+<span class="sd">        (5.0, 0.0, -2.0, 2.0)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Quaternion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_w</span> <span class="o">-</span> <span class="n">q</span><span class="o">.</span><span class="n">_w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">-</span> <span class="n">q</span><span class="o">.</span><span class="n">_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">-</span> <span class="n">q</span><span class="o">.</span><span class="n">_y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_z</span> <span class="o">-</span> <span class="n">q</span><span class="o">.</span><span class="n">_z</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="Quaternion.__rmul__"><a class="viewcode-back" href="../../../parts/rissile/tools/quaternion.html#rissile.tools.quaternion.Quaternion.__rmul__">[docs]</a>    <span class="k">def</span> <span class="nf">__rmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Левостороннее умножение текущего кватерниона на коэффициент.</span>
+
+<span class="sd">        &gt;&gt;&gt; q0 = Quaternion(2.0, -1.0, 3.0, 4.0)</span>
+<span class="sd">        &gt;&gt;&gt; q1 = 2.0 * q0</span>
+<span class="sd">        &gt;&gt;&gt; print(q1)</span>
+<span class="sd">        (4.0, -2.0, 6.0, 8.0)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Quaternion</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_w</span> <span class="o">*</span> <span class="n">k</span><span class="p">,</span>\
+            <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">*</span> <span class="n">k</span><span class="p">,</span>\
+            <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">*</span> <span class="n">k</span><span class="p">,</span>\
+            <span class="bp">self</span><span class="o">.</span><span class="n">_z</span> <span class="o">*</span> <span class="n">k</span>\
+        <span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="Quaternion.__mul__"><a class="viewcode-back" href="../../../parts/rissile/tools/quaternion.html#rissile.tools.quaternion.Quaternion.__mul__">[docs]</a>    <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Возвращает кватернион, полученный путём умножения кватернионов текущего и переданного.</span>
+<span class="sd">        Смысл данного умножения - получить суммированный поворот.</span>
+<span class="sd">        Данная операция не обладает свойством коммутативности, то есть q0 * q1 != q1 * q0.</span>
+
+<span class="sd">        &gt;&gt;&gt; q0 = Quaternion.from_axis_and_angle(Vector(1.0, 0.0, 0.0), Radian(math.pi / 2))</span>
+<span class="sd">        &gt;&gt;&gt; q1 = Quaternion.from_axis_and_angle(Vector(1.0, 0.0, 0.0), Radian(math.pi))</span>
+<span class="sd">        &gt;&gt;&gt; q0 = q0 * q0</span>
+<span class="sd">        &gt;&gt;&gt; print(q0)</span>
+<span class="sd">        (2.22044604925e-16, 1.0, 0.0, 0.0)</span>
+<span class="sd">        &gt;&gt;&gt; print(q1)</span>
+<span class="sd">        (6.12323399574e-17, 1.0, 0.0, 0.0)</span>
+
+<span class="sd">        Если же переданный аргумент является коэффициентом, тогда возвращается</span>
+<span class="sd">        кватернион, составленный из компонентов текущего, умноженного на коэффициент.</span>
+
+<span class="sd">        &gt;&gt;&gt; q0 = Quaternion(2.0, 3.0, 1.0, -1.0)</span>
+<span class="sd">        &gt;&gt;&gt; q1 = q0 * 5</span>
+<span class="sd">        &gt;&gt;&gt; print(q1)</span>
+<span class="sd">        (10.0, 15.0, 5.0, -5.0)</span>
+
+<span class="sd">        :param q: Коэффициент или кватернион.</span>
+<span class="sd">        :type q: Quaternion или float</span>
+<span class="sd">        :returns: Quaternion</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">q_is_quaternion</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">Quaternion</span><span class="p">(</span>\
+                <span class="bp">self</span><span class="o">.</span><span class="n">_w</span> <span class="o">*</span> <span class="n">q</span><span class="o">.</span><span class="n">_w</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">*</span> <span class="n">q</span><span class="o">.</span><span class="n">_x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">*</span> <span class="n">q</span><span class="o">.</span><span class="n">_y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_z</span> <span class="o">*</span> <span class="n">q</span><span class="o">.</span><span class="n">_z</span><span class="p">,</span>\
+                <span class="bp">self</span><span class="o">.</span><span class="n">_w</span> <span class="o">*</span> <span class="n">q</span><span class="o">.</span><span class="n">_x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">*</span> <span class="n">q</span><span class="o">.</span><span class="n">_w</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">*</span> <span class="n">q</span><span class="o">.</span><span class="n">_z</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_z</span> <span class="o">*</span> <span class="n">q</span><span class="o">.</span><span class="n">_y</span><span class="p">,</span>\
+                <span class="bp">self</span><span class="o">.</span><span class="n">_w</span> <span class="o">*</span> <span class="n">q</span><span class="o">.</span><span class="n">_y</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">*</span> <span class="n">q</span><span class="o">.</span><span class="n">_w</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_z</span> <span class="o">*</span> <span class="n">q</span><span class="o">.</span><span class="n">_x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">*</span> <span class="n">q</span><span class="o">.</span><span class="n">_z</span><span class="p">,</span>\
+                <span class="bp">self</span><span class="o">.</span><span class="n">_w</span> <span class="o">*</span> <span class="n">q</span><span class="o">.</span><span class="n">_z</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_z</span> <span class="o">*</span> <span class="n">q</span><span class="o">.</span><span class="n">_w</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">*</span> <span class="n">q</span><span class="o">.</span><span class="n">_y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">*</span> <span class="n">q</span><span class="o">.</span><span class="n">_x</span>\
+            <span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">q_is_quaternion</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">Quaternion</span><span class="p">)</span> <span class="k">else</span> <span class="n">q</span> <span class="o">*</span> <span class="bp">self</span>
+
+</div>
+<div class="viewcode-block" id="Quaternion.__iadd__"><a class="viewcode-back" href="../../../parts/rissile/tools/quaternion.html#rissile.tools.quaternion.Quaternion.__iadd__">[docs]</a>    <span class="k">def</span> <span class="nf">__iadd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Суммирует текущий кватернион с переданным покомпонетно.</span>
+
+<span class="sd">        &gt;&gt;&gt; q0 = Quaternion(3.7, -1.4, 2.0, 7.1)</span>
+<span class="sd">        &gt;&gt;&gt; q1 = Quaternion(-1.2, 4.5, 1.3, -1.1)</span>
+<span class="sd">        &gt;&gt;&gt; q0 += q1</span>
+<span class="sd">        &gt;&gt;&gt; print(q0)</span>
+<span class="sd">        (2.5, 3.1, 3.3, 6.0)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_w</span> <span class="o">+=</span> <span class="n">q</span><span class="o">.</span><span class="n">_w</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">+=</span> <span class="n">q</span><span class="o">.</span><span class="n">_x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">+=</span> <span class="n">q</span><span class="o">.</span><span class="n">_y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_z</span> <span class="o">+=</span> <span class="n">q</span><span class="o">.</span><span class="n">_z</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+</div>
+<div class="viewcode-block" id="Quaternion.__isub__"><a class="viewcode-back" href="../../../parts/rissile/tools/quaternion.html#rissile.tools.quaternion.Quaternion.__isub__">[docs]</a>    <span class="k">def</span> <span class="nf">__isub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Отнимает от текущего кватерниона переданный кватернион покомпонетно.</span>
+
+<span class="sd">        &gt;&gt;&gt; q0 = Quaternion(4.5, -1.4, 3.1, -4.5)</span>
+<span class="sd">        &gt;&gt;&gt; q1 = Quaternion(3.6, 1.2, 3.1, 2.7)</span>
+<span class="sd">        &gt;&gt;&gt; q0 -= q1</span>
+<span class="sd">        &gt;&gt;&gt; print(q0)</span>
+<span class="sd">        (0.9, -2.6, 0.0, -7.2)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_w</span> <span class="o">-=</span> <span class="n">q</span><span class="o">.</span><span class="n">_w</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">-=</span> <span class="n">q</span><span class="o">.</span><span class="n">_x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">-=</span> <span class="n">q</span><span class="o">.</span><span class="n">_y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_z</span> <span class="o">-=</span> <span class="n">q</span><span class="o">.</span><span class="n">_z</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+</div>
+<div class="viewcode-block" id="Quaternion.__imul__"><a class="viewcode-back" href="../../../parts/rissile/tools/quaternion.html#rissile.tools.quaternion.Quaternion.__imul__">[docs]</a>    <span class="k">def</span> <span class="nf">__imul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Умножает текущий кватернион на переданный.</span>
+
+<span class="sd">        &gt;&gt;&gt; q0 = Quaternion.from_axis_and_angle(Vector(1.0, 0.0, 0.0), Radian(math.pi / 2))</span>
+<span class="sd">        &gt;&gt;&gt; q0 *= q0</span>
+<span class="sd">        &gt;&gt;&gt; print(q0)</span>
+<span class="sd">        (2.22044604925e-16, 1.0, 0.0, 0.0)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rotated</span> <span class="o">=</span> <span class="bp">self</span> <span class="o">*</span> <span class="n">q</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_w</span> <span class="o">=</span> <span class="n">rotated</span><span class="o">.</span><span class="n">_w</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">=</span> <span class="n">rotated</span><span class="o">.</span><span class="n">_x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">=</span> <span class="n">rotated</span><span class="o">.</span><span class="n">_y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_z</span> <span class="o">=</span> <span class="n">rotated</span><span class="o">.</span><span class="n">_z</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+</div>
+<div class="viewcode-block" id="Quaternion.__eq__"><a class="viewcode-back" href="../../../parts/rissile/tools/quaternion.html#rissile.tools.quaternion.Quaternion.__eq__">[docs]</a>    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Сравнение текущего и переданного кватернионов на равенство.</span>
+
+<span class="sd">        &gt;&gt;&gt; q0 = Quaternion.from_axis_and_angle(Vector(1.0, 0.0, 0.0), Radian(math.pi / 2))</span>
+<span class="sd">        &gt;&gt;&gt; q1 =Quaternion.from_axis_and_angle(Vector(1.0, 0.0, 0.0), Degree(90.000000001))</span>
+<span class="sd">        &gt;&gt;&gt; q0 == q1</span>
+<span class="sd">        True</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">rissile.tools.assistants</span> <span class="kn">import</span> <span class="n">is_equals</span>
+        <span class="k">return</span> <span class="n">is_equals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_w</span><span class="p">,</span> <span class="n">q</span><span class="o">.</span><span class="n">_w</span><span class="p">)</span> <span class="ow">and</span> <span class="n">is_equals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="p">,</span> <span class="n">q</span><span class="o">.</span><span class="n">_x</span><span class="p">)</span> <span class="ow">and</span> <span class="n">is_equals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">,</span> <span class="n">q</span><span class="o">.</span><span class="n">_y</span><span class="p">)</span> <span class="ow">and</span> <span class="n">is_equals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_z</span><span class="p">,</span> <span class="n">q</span><span class="o">.</span><span class="n">_z</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="Quaternion.rotated_vector"><a class="viewcode-back" href="../../../parts/rissile/tools/quaternion.html#rissile.tools.quaternion.Quaternion.rotated_vector">[docs]</a>    <span class="k">def</span> <span class="nf">rotated_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vector</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Поворачивает вектор на углы, соответствующие данному кватерниону.</span>
+<span class="sd">        Ниже приведён пример поворота вектора (1, 0, 0) вокруг оси Z.</span>
+
+<span class="sd">        &gt;&gt;&gt; q0 = Quaternion.from_axis_and_angle(Vector(0.0, 0.0, 1.0), Radian(math.pi / 2))</span>
+<span class="sd">        &gt;&gt;&gt; vector = q0.rotated_vector(Vector(1.0, 0.0, 0.0))</span>
+<span class="sd">        &gt;&gt;&gt; print(vector)</span>
+<span class="sd">        (2.22044604925e-16, 1.0, 0.0)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">q0</span> <span class="o">=</span> <span class="n">Quaternion</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">vector</span><span class="o">.</span><span class="n">x</span><span class="p">(),</span> <span class="n">vector</span><span class="o">.</span><span class="n">y</span><span class="p">(),</span> <span class="n">vector</span><span class="o">.</span><span class="n">z</span><span class="p">())</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span> <span class="o">*</span> <span class="n">q0</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">conjugate</span><span class="p">())</span><span class="o">.</span><span class="n">vector</span><span class="p">()</span>        
+
+</div>
+<div class="viewcode-block" id="Quaternion.roll"><a class="viewcode-back" href="../../../parts/rissile/tools/quaternion.html#rissile.tools.quaternion.Quaternion.roll">[docs]</a>    <span class="k">def</span> <span class="nf">roll</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reproject_axis</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Рассчитывает локальный угол курса текущего кватерниона.</span>
+
+<span class="sd">        &gt;&gt;&gt; q0 = Quaternion.around_z(Degree(47.0))</span>
+<span class="sd">        &gt;&gt;&gt; roll = q0.roll()</span>
+<span class="sd">        &gt;&gt;&gt; print(roll.to_degree())</span>
+<span class="sd">        47.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">reproject_axis</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_z</span>
+            <span class="n">wz</span> <span class="o">=</span> <span class="n">z</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w</span>
+            <span class="n">xy</span> <span class="o">=</span> <span class="n">y</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span>
+            <span class="n">yy</span> <span class="o">=</span> <span class="n">y</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span>
+            <span class="n">zz</span> <span class="o">=</span> <span class="n">z</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_z</span>
+            <span class="k">return</span> <span class="n">Radian</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">xy</span> <span class="o">+</span> <span class="n">wz</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">yy</span> <span class="o">-</span> <span class="n">zz</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">first</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_z</span><span class="p">)</span>
+            <span class="n">second</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_z</span> <span class="o">**</span> <span class="mi">2</span>
+            <span class="k">return</span> <span class="n">Radian</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">))</span>
+
+</div>
+<div class="viewcode-block" id="Quaternion.pitch"><a class="viewcode-back" href="../../../parts/rissile/tools/quaternion.html#rissile.tools.quaternion.Quaternion.pitch">[docs]</a>    <span class="k">def</span> <span class="nf">pitch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reproject_axis</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Рассчитывает локальный угол тангажа текущего кватерниона.</span>
+<span class="sd">        </span>
+<span class="sd">        &gt;&gt;&gt; q0 = Quaternion.around_x(Degree(53.0))</span>
+<span class="sd">        &gt;&gt;&gt; pitch = q0.pitch()</span>
+<span class="sd">        &gt;&gt;&gt; print(pitch.to_degree())</span>
+<span class="sd">        53.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">reproject_axis</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_z</span>
+            <span class="n">wx</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w</span>
+            <span class="n">xx</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span>
+            <span class="n">yz</span> <span class="o">=</span> <span class="n">z</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span>
+            <span class="n">zz</span> <span class="o">=</span> <span class="n">z</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_z</span>
+            <span class="k">return</span> <span class="n">Radian</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">yz</span> <span class="o">+</span> <span class="n">wx</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">xx</span> <span class="o">-</span> <span class="n">zz</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">first</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_z</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="p">)</span>
+            <span class="n">second</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_z</span> <span class="o">**</span> <span class="mi">2</span>
+            <span class="k">return</span> <span class="n">Radian</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">))</span> 
+
+</div>
+<div class="viewcode-block" id="Quaternion.yaw"><a class="viewcode-back" href="../../../parts/rissile/tools/quaternion.html#rissile.tools.quaternion.Quaternion.yaw">[docs]</a>    <span class="k">def</span> <span class="nf">yaw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reproject_axis</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Рассчитывает локальный угол крена текущего кватерниона.</span>
+<span class="sd">        </span>
+<span class="sd">        &gt;&gt;&gt; q0 = Quaternion.around_y(Degree(-30.0))</span>
+<span class="sd">        &gt;&gt;&gt; yaw = q0.yaw()</span>
+<span class="sd">        &gt;&gt;&gt; print(yaw.to_degree())</span>
+<span class="sd">        -30.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">reproject_axis</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_z</span>
+            <span class="n">wy</span> <span class="o">=</span> <span class="n">y</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w</span>
+            <span class="n">xx</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span>
+            <span class="n">xz</span> <span class="o">=</span> <span class="n">z</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span>
+            <span class="n">yy</span> <span class="o">=</span> <span class="n">y</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span>
+            <span class="k">return</span> <span class="n">Radian</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">xz</span> <span class="o">+</span> <span class="n">wy</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">xx</span> <span class="o">-</span> <span class="n">yy</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Radian</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">asin</span><span class="p">(</span><span class="o">-</span><span class="mf">2.0</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_z</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">)))</span>
+
+</div>
+<div class="viewcode-block" id="Quaternion.dot"><a class="viewcode-back" href="../../../parts/rissile/tools/quaternion.html#rissile.tools.quaternion.Quaternion.dot">[docs]</a>    <span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Возвращает скалярное произведение текущего и</span>
+<span class="sd">        переданного кватернионов.</span>
+
+<span class="sd">        &gt;&gt;&gt; q0 = Quaternion(4.0, 2.5, -2.0, 2.0)</span>
+<span class="sd">        &gt;&gt;&gt; q1 = Quaternion(1.0, 2.0, -1.5, 0.5)</span>
+<span class="sd">        &gt;&gt;&gt; dot = q0.dot(q1)</span>
+<span class="sd">        &gt;&gt;&gt; print(dot)</span>
+<span class="sd">        13.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w</span> <span class="o">*</span> <span class="n">q</span><span class="o">.</span><span class="n">_w</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">*</span> <span class="n">q</span><span class="o">.</span><span class="n">_x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">*</span> <span class="n">q</span><span class="o">.</span><span class="n">_y</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_z</span> <span class="o">*</span> <span class="n">q</span><span class="o">.</span><span class="n">_z</span>
+
+</div>
+<div class="viewcode-block" id="Quaternion.slerp"><a class="viewcode-back" href="../../../parts/rissile/tools/quaternion.html#rissile.tools.quaternion.Quaternion.slerp">[docs]</a>    <span class="k">def</span> <span class="nf">slerp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">factor</span><span class="p">,</span> <span class="n">dest</span><span class="p">,</span> <span class="n">shortest_path</span> <span class="o">=</span> <span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Сферическая линейная интерполяция между двумя кватернионами.</span>
+<span class="sd">        Операция не обладает свойствами коммутативности, то есть</span>
+<span class="sd">        slerp(first_quaternion, 0.25, second_quaternion) != slerp(second_quaternion, 0.75, first_quaternion).</span>
+<span class="sd">        Это особенно важно учитывать в ряде задач, например при рассчёте инверсной кинематики.</span>
+
+<span class="sd">        :param factor: указывает на шаг интерполяции между двумя кватернионами, принадлежит отрезку [0; 1].</span>
+<span class="sd">        :type factor: float</span>
+<span class="sd">        :param dest: кватернион, к которому будет выполняться интерполяция.</span>
+<span class="sd">        :type dest: Quaternion</span>
+
+<span class="sd">        &gt;&gt;&gt; q0 = Quaternion.around_x(Degree(0.0))</span>
+<span class="sd">        &gt;&gt;&gt; q1 = Quaternion.around_x(Degree(90.0))</span>
+<span class="sd">        &gt;&gt;&gt; q2 = q0.slerp(0.0, q1)</span>
+<span class="sd">        &gt;&gt;&gt; q3 = q0.slerp(0.5, q1)</span>
+<span class="sd">        &gt;&gt;&gt; q4 = q0.slerp(1.0, q1)</span>
+<span class="sd">        &gt;&gt;&gt; print(q0)</span>
+<span class="sd">        (1.0, 0.0, 0.0, 0.0)</span>
+<span class="sd">        &gt;&gt;&gt; print(q1)</span>
+<span class="sd">        (0.707106781187, 0.707106781187, 0.0, 0.0)</span>
+<span class="sd">        &gt;&gt;&gt; print(q2)</span>
+<span class="sd">        (1.0, 0.0, 0.0, 0.0)</span>
+<span class="sd">        &gt;&gt;&gt; print(q3)</span>
+<span class="sd">        (0.923879532511, 0.382683432365, 0.0, 0.0)</span>
+<span class="sd">        &gt;&gt;&gt; print(q4)</span>
+<span class="sd">        (0.707106781187, 0.707106781187, 0.0, 0.0)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">dest</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cos</span> <span class="o">&lt;</span> <span class="mf">0.0</span> <span class="ow">and</span> <span class="n">shortest_path</span><span class="p">:</span>
+            <span class="n">cos</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="o">-</span><span class="n">dest</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">dest</span>
+        <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">cos</span><span class="p">)</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">assistants</span><span class="o">.</span><span class="n">TOLERANCE_VALUE</span><span class="p">):</span>
+            <span class="n">sin</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">cos</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
+            <span class="n">angle</span> <span class="o">=</span> <span class="n">Radian</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">sin</span><span class="p">,</span> <span class="n">cos</span><span class="p">))</span>
+            <span class="n">coeff0</span> <span class="o">=</span> <span class="p">(</span><span class="n">angle</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">factor</span><span class="p">))</span><span class="o">.</span><span class="n">sin</span><span class="p">()</span> <span class="o">/</span> <span class="n">sin</span>
+            <span class="n">coeff1</span> <span class="o">=</span> <span class="p">(</span><span class="n">angle</span> <span class="o">*</span> <span class="n">factor</span><span class="p">)</span><span class="o">.</span><span class="n">sin</span><span class="p">()</span> <span class="o">/</span> <span class="n">sin</span>
+            <span class="k">return</span> <span class="bp">self</span> <span class="o">*</span> <span class="n">coeff0</span> <span class="o">+</span> <span class="n">res</span> <span class="o">*</span> <span class="n">coeff1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">factor</span><span class="p">)</span> <span class="o">+</span> <span class="n">res</span> <span class="o">*</span> <span class="n">factor</span>
+            <span class="n">res</span><span class="o">.</span><span class="n">normalise</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">res</span>
+
+</div>
+    <span class="k">def</span> <span class="nf">clone</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Quaternion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_z</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Rissile 0.0.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, ОАО МКБ &#34;Факел&#34;.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,344 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>rissile.tools.angles &mdash; Rissile 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Rissile 0.0.1 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Rissile 0.0.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for rissile.tools.angles</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Чтобы очистить код, работающий с</span>
+<span class="sd">угловыми сущностями, от</span>
+<span class="sd">магической константы вида 57.3,</span>
+<span class="sd">в проекте Rissile используются классы</span>
+<span class="sd">Radian и Degree.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="n">__author__</span><span class="o">=</span><span class="s">&quot;K. Kulikov&quot;</span>
+<span class="n">__date__</span> <span class="o">=</span><span class="s">&quot;$Jun 06, 2014 10:30:15 AM$&quot;</span>
+
+
+<span class="kn">import</span> <span class="nn">math</span>
+
+
+<div class="viewcode-block" id="PhysicalValue"><a class="viewcode-back" href="../../../parts/rissile/tools/angles.html#rissile.tools.angles.PhysicalValue">[docs]</a><span class="k">class</span> <span class="nc">PhysicalValue</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Модуль описывает физическую величину.</span>
+<span class="sd">    Пример использования приведён на базе классов Radian и Degree.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">=</span> <span class="n">value</span>
+
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span>
+
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;{value}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="PhysicalValue.__add__"><a class="viewcode-back" href="../../../parts/rissile/tools/angles.html#rissile.tools.angles.PhysicalValue.__add__">[docs]</a>    <span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Сложение двух углов.</span>
+
+<span class="sd">        &gt;&gt;&gt; radian = Radian(math.pi / 2)</span>
+<span class="sd">        &gt;&gt;&gt; radian = radian + Radian(math.pi / 2)</span>
+<span class="sd">        &gt;&gt;&gt; print(radian)</span>
+<span class="sd">        3.14159265359</span>
+<span class="sd">        &gt;&gt;&gt; degree = Degree(90.0)</span>
+<span class="sd">        &gt;&gt;&gt; degree = degree + Radian(math.pi / 2).to_degree()</span>
+<span class="sd">        &gt;&gt;&gt; print(degree)</span>
+<span class="sd">        180.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">+</span> <span class="n">angle</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="PhysicalValue.__sub__"><a class="viewcode-back" href="../../../parts/rissile/tools/angles.html#rissile.tools.angles.PhysicalValue.__sub__">[docs]</a>    <span class="k">def</span> <span class="nf">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Вычитание двух углов.</span>
+
+<span class="sd">        &gt;&gt;&gt; angle0 = Degree(180.0)</span>
+<span class="sd">        &gt;&gt;&gt; angle1 = Degree(180.0)</span>
+<span class="sd">        &gt;&gt;&gt; angle2 = angle0 + angle1</span>
+<span class="sd">        &gt;&gt;&gt; print(angle2)</span>
+<span class="sd">        360.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">-</span> <span class="n">angle</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="PhysicalValue.__mul__"><a class="viewcode-back" href="../../../parts/rissile/tools/angles.html#rissile.tools.angles.PhysicalValue.__mul__">[docs]</a>    <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Получить угол, равный текщему умноженному на k. Правостороннее умножение.</span>
+
+<span class="sd">        &gt;&gt;&gt; angle0 = Degree(60.0)</span>
+<span class="sd">        &gt;&gt;&gt; angle1 = angle0 * 2.5</span>
+<span class="sd">        &gt;&gt;&gt; print(angle1)</span>
+<span class="sd">        150.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">*</span> <span class="n">k</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="PhysicalValue.__rmul__"><a class="viewcode-back" href="../../../parts/rissile/tools/angles.html#rissile.tools.angles.PhysicalValue.__rmul__">[docs]</a>    <span class="k">def</span> <span class="nf">__rmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Левостороннее умножение.</span>
+
+<span class="sd">        &gt;&gt;&gt; angle0 = Degree(60.0)</span>
+<span class="sd">        &gt;&gt;&gt; angle1 = 2.5 * angle0</span>
+<span class="sd">        &gt;&gt;&gt; print(angle1)</span>
+<span class="sd">        150.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="o">*</span> <span class="n">k</span>
+
+</div>
+<div class="viewcode-block" id="PhysicalValue.__div__"><a class="viewcode-back" href="../../../parts/rissile/tools/angles.html#rissile.tools.angles.PhysicalValue.__div__">[docs]</a>    <span class="k">def</span> <span class="nf">__div__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Получить угол, равный текущему делённому на k.</span>
+
+<span class="sd">        &gt;&gt;&gt; angle0 = Radian(math.pi)</span>
+<span class="sd">        &gt;&gt;&gt; angle1 = angle0 / 4</span>
+<span class="sd">        &gt;&gt;&gt; print(angle1)</span>
+<span class="sd">        0.785398163397</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">/</span> <span class="n">k</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="PhysicalValue.__neg__"><a class="viewcode-back" href="../../../parts/rissile/tools/angles.html#rissile.tools.angles.PhysicalValue.__neg__">[docs]</a>    <span class="k">def</span> <span class="nf">__neg__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Получить угол, противоположный текущему.</span>
+
+<span class="sd">        &gt;&gt;&gt; angle0 = Degree(45.0)</span>
+<span class="sd">        &gt;&gt;&gt; angle1 = - angle0</span>
+<span class="sd">        &gt;&gt;&gt; print(angle1)</span>
+<span class="sd">        -45.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="PhysicalValue.__iadd__"><a class="viewcode-back" href="../../../parts/rissile/tools/angles.html#rissile.tools.angles.PhysicalValue.__iadd__">[docs]</a>    <span class="k">def</span> <span class="nf">__iadd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Сложение с присваиванием.</span>
+
+<span class="sd">        &gt;&gt;&gt; angle0 = Radian(math.pi / 2)</span>
+<span class="sd">        &gt;&gt;&gt; angle0 += angle0</span>
+<span class="sd">        &gt;&gt;&gt; print(angle0)</span>
+<span class="sd">        3.14159265359</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">+=</span> <span class="n">angle</span><span class="o">.</span><span class="n">_value</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+</div>
+<div class="viewcode-block" id="PhysicalValue.__isub__"><a class="viewcode-back" href="../../../parts/rissile/tools/angles.html#rissile.tools.angles.PhysicalValue.__isub__">[docs]</a>    <span class="k">def</span> <span class="nf">__isub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Вычитание с присваиванием.</span>
+
+<span class="sd">        &gt;&gt;&gt; import math</span>
+<span class="sd">        &gt;&gt;&gt; angle0 = Radian(math.pi)</span>
+<span class="sd">        &gt;&gt;&gt; angle0 -= Radian(math.pi)</span>
+<span class="sd">        &gt;&gt;&gt; print(angle0)</span>
+<span class="sd">        0.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">-=</span> <span class="n">angle</span><span class="o">.</span><span class="n">_value</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+</div>
+<div class="viewcode-block" id="PhysicalValue.__imul__"><a class="viewcode-back" href="../../../parts/rissile/tools/angles.html#rissile.tools.angles.PhysicalValue.__imul__">[docs]</a>    <span class="k">def</span> <span class="nf">__imul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Заменить значение текущего вектора</span>
+<span class="sd">        его произведением с коэффициентом.</span>
+
+<span class="sd">        &gt;&gt;&gt; angle0 = Degree(30.0)</span>
+<span class="sd">        &gt;&gt;&gt; angle0 *= 3.0</span>
+<span class="sd">        &gt;&gt;&gt; print(angle0)</span>
+<span class="sd">        90.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">*=</span> <span class="n">k</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+</div>
+<div class="viewcode-block" id="PhysicalValue.__idiv__"><a class="viewcode-back" href="../../../parts/rissile/tools/angles.html#rissile.tools.angles.PhysicalValue.__idiv__">[docs]</a>    <span class="k">def</span> <span class="nf">__idiv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Заменить значение текущего вектора</span>
+<span class="sd">        его частным с к.</span>
+
+<span class="sd">        &gt;&gt;&gt; angle0 = Degree(90.0)</span>
+<span class="sd">        &gt;&gt;&gt; angle0 /= 2.0</span>
+<span class="sd">        &gt;&gt;&gt; print(angle0)</span>
+<span class="sd">        45.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">/=</span> <span class="n">k</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+</div></div>
+<div class="viewcode-block" id="Radian"><a class="viewcode-back" href="../../../parts/rissile/tools/angles.html#rissile.tools.angles.Radian">[docs]</a><span class="k">class</span> <span class="nc">Radian</span><span class="p">(</span><span class="n">PhysicalValue</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Возвращает текущее значение в</span>
+<span class="sd">    размерности радиан.</span>
+
+<span class="sd">    &gt;&gt;&gt; radian = Radian(math.pi)</span>
+<span class="sd">    &gt;&gt;&gt; radian.degrees()</span>
+<span class="sd">    180.0</span>
+<span class="sd">    &gt;&gt;&gt; radian.cos()</span>
+<span class="sd">    -1.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">PhysicalValue</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">degrees</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>        
+        <span class="k">return</span> <span class="mf">180.0</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span>
+
+
+    <span class="k">def</span> <span class="nf">to_degree</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Degree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">degrees</span><span class="p">())</span>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_degrees</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Degree</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">to_radian</span><span class="p">()</span>
+
+
+    <span class="k">def</span> <span class="nf">sin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">cos</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">tan</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span> 
+
+</div>
+<div class="viewcode-block" id="Degree"><a class="viewcode-back" href="../../../parts/rissile/tools/angles.html#rissile.tools.angles.Degree">[docs]</a><span class="k">class</span> <span class="nc">Degree</span><span class="p">(</span><span class="n">PhysicalValue</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Возвращает текущее значение в</span>
+<span class="sd">    размерности градус.</span>
+
+<span class="sd">    &gt;&gt;&gt; degrees = Degree(180.0)</span>
+<span class="sd">    &gt;&gt;&gt; degrees.radians()</span>
+<span class="sd">    3.141592653589793</span>
+<span class="sd">    &gt;&gt;&gt; degrees.cos()</span>
+<span class="sd">    -1.0</span>
+<span class="sd">    &gt;&gt;&gt; degrees.tan()</span>
+<span class="sd">    -1.2246467991473532e-16</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">PhysicalValue</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">radians</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">/</span> <span class="mi">180</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span>
+
+
+    <span class="k">def</span> <span class="nf">to_radian</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Radian</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">radians</span><span class="p">())</span>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_radians</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Radian</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">to_degree</span><span class="p">()</span>
+
+
+    <span class="k">def</span> <span class="nf">sin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_radian</span><span class="p">()</span><span class="o">.</span><span class="n">sin</span><span class="p">()</span>
+
+
+    <span class="k">def</span> <span class="nf">cos</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_radian</span><span class="p">()</span><span class="o">.</span><span class="n">cos</span><span class="p">()</span>
+
+
+    <span class="k">def</span> <span class="nf">tan</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_radian</span><span class="p">()</span><span class="o">.</span><span class="n">tan</span><span class="p">()</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Rissile 0.0.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, ОАО МКБ &#34;Факел&#34;.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

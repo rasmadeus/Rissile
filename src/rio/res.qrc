@@ -1,0 +1,10 @@
+<RCC>
+  <qresource prefix="/first_face/">
+    <file>res/stop.png</file>
+    <file>res/load.png</file>
+    <file>res/run.png</file>
+    <file>res/load.png</file>
+    <file>res/save.png</file>
+    <file>res/main_icon.png</file>
+  </qresource>
+</RCC>

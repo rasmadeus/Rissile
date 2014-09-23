@@ -1,0 +1,417 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>rio.properties_item &mdash; Rissile 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Rissile 0.0.1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Rissile 0.0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for rio.properties_item</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+
+
+<span class="n">__author__</span><span class="o">=</span><span class="s">&quot;K. Kulikov&quot;</span>
+<span class="n">__date__</span> <span class="o">=</span><span class="s">&quot;$24.06.2014 15:42:21$&quot;</span>
+
+
+<span class="kn">from</span> <span class="nn">PyQt4</span> <span class="kn">import</span> <span class="n">QtCore</span><span class="p">,</span> <span class="n">QtGui</span>
+
+
+<div class="viewcode-block" id="Item"><a class="viewcode-back" href="../../parts/rio/api/properties_item.html#rio.properties_item.Item">[docs]</a><span class="k">class</span> <span class="nc">Item</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Класс предоставляет интерфейс для организации иерархии свойств вида ключ: значение.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Item.__init__"><a class="viewcode-back" href="../../parts/rio/api/properties_item.html#rio.properties_item.Item.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param name: идентификатор свойства.</span>
+<span class="sd">        :type name: str.</span>
+<span class="sd">        :param owner: владелей свойства.</span>
+<span class="sd">        :type owner: Item.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">append_properties</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>   <span class="c"># Идентификатор свойства.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_owner</span> <span class="o">=</span> <span class="n">owner</span> <span class="c"># Владелей свойства.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parts</span> <span class="o">=</span> <span class="p">[]</span>    <span class="c"># Составные части свойства.</span>
+
+
+        <span class="k">def</span> <span class="nf">add_part</span><span class="p">():</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Добавляет к self к составным частям владельца, если последний существует.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="n">owner</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">owner</span><span class="o">.</span><span class="n">_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+
+        <span class="n">append_properties</span><span class="p">()</span>
+        <span class="n">add_part</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="Item.clear_parts"><a class="viewcode-back" href="../../parts/rio/api/properties_item.html#rio.properties_item.Item.clear_parts">[docs]</a>    <span class="k">def</span> <span class="nf">clear_parts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        УФункция удаляет все составные части объекта.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parts</span> <span class="o">=</span> <span class="p">[]</span>   
+
+        </div>
+<div class="viewcode-block" id="Item.flags"><a class="viewcode-back" href="../../parts/rio/api/properties_item.html#rio.properties_item.Item.flags">[docs]</a>    <span class="k">def</span> <span class="nf">flags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Первый столбец - идентификатор, не подлежит редактированию.</span>
+<span class="sd">        Второй столбец редактировать дозволено в реализации по умолчанию.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">column</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="k">return</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">ItemIsSelectable</span> <span class="o">|</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">ItemIsEnabled</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flags_for_value</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="Item._flags_for_value"><a class="viewcode-back" href="../../parts/rio/api/properties_item.html#rio.properties_item.Item._flags_for_value">[docs]</a>    <span class="k">def</span> <span class="nf">_flags_for_value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: флаги, позволяющие редактировать величину.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">ItemIsEnabled</span> <span class="o">|</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">ItemIsEditable</span>
+
+</div>
+<div class="viewcode-block" id="Item.row"><a class="viewcode-back" href="../../parts/rio/api/properties_item.html#rio.properties_item.Item.row">[docs]</a>    <span class="k">def</span> <span class="nf">row</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        self является составной частью своего владельца, если он есть.</span>
+
+<span class="sd">        :return: индекс, под которым self следует в составе своего владельца.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_owner</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_owner</span><span class="o">.</span><span class="n">_parts</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="Item.owner"><a class="viewcode-back" href="../../parts/rio/api/properties_item.html#rio.properties_item.Item.owner">[docs]</a>    <span class="k">def</span> <span class="nf">owner</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Владелец self.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_owner</span>
+
+</div>
+<div class="viewcode-block" id="Item.parts_count"><a class="viewcode-back" href="../../parts/rio/api/properties_item.html#rio.properties_item.Item.parts_count">[docs]</a>    <span class="k">def</span> <span class="nf">parts_count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Количество составных частей self.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parts</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="Item.part"><a class="viewcode-back" href="../../parts/rio/api/properties_item.html#rio.properties_item.Item.part">[docs]</a>    <span class="k">def</span> <span class="nf">part</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Возвращает ссылку на свою часть.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parts</span><span class="p">[</span><span class="n">row</span><span class="p">]</span>
+
+</div>
+<div class="viewcode-block" id="Item.column_count"><a class="viewcode-back" href="../../parts/rio/api/properties_item.html#rio.properties_item.Item.column_count">[docs]</a>    <span class="k">def</span> <span class="nf">column_count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Свойство описывается его идентификатором и значением. Поэтому возвращаем 2.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">2</span>
+    
+</div>
+<div class="viewcode-block" id="Item.name"><a class="viewcode-back" href="../../parts/rio/api/properties_item.html#rio.properties_item.Item.name">[docs]</a>    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Идентификатор свойства.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+</div>
+<div class="viewcode-block" id="Item.show"><a class="viewcode-back" href="../../parts/rio/api/properties_item.html#rio.properties_item.Item.show">[docs]</a>    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">role</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Функция предназначена для вызова из QAbstractItemModel, для отображения свойства на экране.</span>
+<span class="sd">        Путём реализации соответствующих функций, вы можете настроить вид каждого конкретного свойства.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">showman</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">DisplayRole</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_display_role</span><span class="p">,</span>
+            <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">FontRole</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_font_role</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">showman</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">role</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">column</span><span class="p">:</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QVariant</span><span class="p">())(</span><span class="n">column</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="Item._display_role"><a class="viewcode-back" href="../../parts/rio/api/properties_item.html#rio.properties_item.Item._display_role">[docs]</a>    <span class="k">def</span> <span class="nf">_display_role</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Текстовое представление. В первом столбце всегда выводится идентификатор вершины.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="k">if</span> <span class="n">column</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_second_column_display_role</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="Item._second_column_display_role"><a class="viewcode-back" href="../../parts/rio/api/properties_item.html#rio.properties_item.Item._second_column_display_role">[docs]</a>    <span class="k">def</span> <span class="nf">_second_column_display_role</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Если вы хотите, чтобы во втором столбце представления выводились</span>
+<span class="sd">        данные, отличные от представленных по умолчанию, перегружайте эту функцию.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span>
+
+</div>
+<div class="viewcode-block" id="Item._font_role"><a class="viewcode-back" href="../../parts/rio/api/properties_item.html#rio.properties_item.Item._font_role">[docs]</a>    <span class="k">def</span> <span class="nf">_font_role</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Шрифт текстового представления.</span>
+
+<span class="sd">        :return: шрифт, установленный в системе по умолчанию.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QVariant</span><span class="p">()</span>
+
+</div></div>
+<div class="viewcode-block" id="Value"><a class="viewcode-back" href="../../parts/rio/api/properties_item.html#rio.properties_item.Value">[docs]</a><span class="k">class</span> <span class="nc">Value</span><span class="p">(</span><span class="n">Item</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Класс помимо идентификатора содержит значение, которое можно редактировать.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">Item</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">owner</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+
+<div class="viewcode-block" id="Value.value"><a class="viewcode-back" href="../../parts/rio/api/properties_item.html#rio.properties_item.Value.value">[docs]</a>    <span class="k">def</span> <span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: self._value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span>
+
+</div>
+<div class="viewcode-block" id="Value.set_value"><a class="viewcode-back" href="../../parts/rio/api/properties_item.html#rio.properties_item.Value.set_value">[docs]</a>    <span class="k">def</span> <span class="nf">set_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        В этой функции выполняйте установку значения.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+</div></div>
+<div class="viewcode-block" id="ValueEditable"><a class="viewcode-back" href="../../parts/rio/api/properties_item.html#rio.properties_item.ValueEditable">[docs]</a><span class="k">class</span> <span class="nc">ValueEditable</span><span class="p">(</span><span class="n">Value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Класс позволяет редактировать значение.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">Value</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">owner</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ValueEditable.set_value"><a class="viewcode-back" href="../../parts/rio/api/properties_item.html#rio.properties_item.ValueEditable.set_value">[docs]</a>    <span class="k">def</span> <span class="nf">set_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :type value: bool | str | int | float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">=</span> <span class="n">value</span>
+
+</div></div>
+<div class="viewcode-block" id="ValueForGenerator"><a class="viewcode-back" href="../../parts/rio/api/properties_item.html#rio.properties_item.ValueForGenerator">[docs]</a><span class="k">class</span> <span class="nc">ValueForGenerator</span><span class="p">(</span><span class="n">Value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Класс-контейнер, организует интерфейс для редактирования исходных данных генераторов</span>
+<span class="sd">    из пакета rissile.wo.data_generator</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
+        <span class="n">Value</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">owner</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">change_type</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ValueForGenerator.change_type"><a class="viewcode-back" href="../../parts/rio/api/properties_item.html#rio.properties_item.ValueForGenerator.change_type">[docs]</a>    <span class="k">def</span> <span class="nf">change_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">init_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Функция меняет части self в зависимости от типа.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">create_parts_for_const_generator</span><span class="p">():</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Меняет части self в соответсвии с исходными данными для rissile.wo.data_generator.ValueConstGenerator</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">ValueEditable</span><span class="p">(</span><span class="s">&#39;value&#39;</span><span class="p">,</span> <span class="n">init_value</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+            <span class="kn">from</span> <span class="nn">rissile.wo.data_generator</span> <span class="kn">import</span> <span class="n">ValueConstGenerator</span>
+            <span class="k">return</span> <span class="n">ValueConstGenerator</span>
+
+
+        <span class="k">def</span> <span class="nf">create_parts_for_range_generator</span><span class="p">():</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Меняет части self в соответсвии с исходными данными для rissile.wo.data_generator.ValueRangeGenerator</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">ValueEditable</span><span class="p">(</span><span class="s">&#39;begin&#39;</span><span class="p">,</span> <span class="n">init_value</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+            <span class="n">ValueEditable</span><span class="p">(</span><span class="s">&#39;right_border&#39;</span><span class="p">,</span> <span class="n">init_value</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+            <span class="n">ValueEditable</span><span class="p">(</span><span class="s">&#39;step&#39;</span><span class="p">,</span> <span class="n">init_value</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+            <span class="kn">from</span> <span class="nn">rissile.wo.data_generator</span> <span class="kn">import</span> <span class="n">ValueRangeGenerator</span>
+            <span class="k">return</span> <span class="n">ValueRangeGenerator</span>
+
+
+        <span class="k">def</span> <span class="nf">create_parts_for_random_generator</span><span class="p">():</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Меняет части self в соответсвии с исходными данными для rissile.wo.data_generator.ValueRandomGenerator</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">ValueEditable</span><span class="p">(</span><span class="s">&#39;left_border&#39;</span><span class="p">,</span> <span class="n">init_value</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+            <span class="n">ValueEditable</span><span class="p">(</span><span class="s">&#39;right_border&#39;</span><span class="p">,</span> <span class="n">init_value</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+            <span class="kn">from</span> <span class="nn">rissile.wo.data_generator</span> <span class="kn">import</span> <span class="n">ValueRandomGenerator</span>
+            <span class="k">return</span> <span class="n">ValueRandomGenerator</span>
+
+
+        <span class="n">makers</span> <span class="o">=</span> <span class="p">{</span>\
+            <span class="s">&#39;const generator&#39;</span><span class="p">:</span> <span class="n">create_parts_for_const_generator</span><span class="p">,</span>\
+            <span class="s">&#39;range generator&#39;</span><span class="p">:</span> <span class="n">create_parts_for_range_generator</span><span class="p">,</span>\
+            <span class="s">&#39;random generator&#39;</span><span class="p">:</span> <span class="n">create_parts_for_random_generator</span>\
+        <span class="p">}</span>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">clear_parts</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_generator</span> <span class="o">=</span> <span class="n">makers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">create_parts_for_const_generator</span><span class="p">)()</span>
+
+</div>
+<div class="viewcode-block" id="ValueForGenerator.set_value"><a class="viewcode-back" href="../../parts/rio/api/properties_item.html#rio.properties_item.ValueForGenerator.set_value">[docs]</a>    <span class="k">def</span> <span class="nf">set_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Данная функция изменяет тип контейнера в части задания исходных данных для генератора.</span>
+
+<span class="sd">        :type value: QVarinat(QString())</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">init_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">_value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">toString</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">change_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">,</span> <span class="n">init_value</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="ValueForGenerator.fill"><a class="viewcode-back" href="../../parts/rio/api/properties_item.html#rio.properties_item.ValueForGenerator.fill">[docs]</a>    <span class="k">def</span> <span class="nf">fill</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wo_init_data_generator</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Заполняет генератор значением, соответствующему self.</span>
+
+<span class="sd">        :type wo_init_data_generator: rissile.wo._data_generator.WorldObjectDataGenerator</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">params</span><span class="p">():</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            :return: параметры для инициализации генератора.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parts</span><span class="p">:</span>
+                <span class="n">params</span><span class="p">[</span><span class="n">part</span><span class="o">.</span><span class="n">_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">part</span><span class="o">.</span><span class="n">_value</span>
+            <span class="k">return</span> <span class="n">params</span>
+
+        
+        <span class="n">wo_init_data_generator</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_generator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="n">params</span><span class="p">()))</span>
+
+</div></div>
+<div class="viewcode-block" id="Root"><a class="viewcode-back" href="../../parts/rio/api/properties_item.html#rio.properties_item.Root">[docs]</a><span class="k">class</span> <span class="nc">Root</span><span class="p">(</span><span class="n">Item</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Класс выполняет функции контейнера для элементов типа Root или типа ValueForGenerator.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Root._font_role"><a class="viewcode-back" href="../../parts/rio/api/properties_item.html#rio.properties_item.Root._font_role">[docs]</a>    <span class="k">def</span> <span class="nf">_font_role</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: жирный шрифт, установленный по умолчанию.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">font</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QFont</span><span class="p">()</span>
+        <span class="n">font</span><span class="o">.</span><span class="n">setBold</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">font</span>
+
+</div>
+<div class="viewcode-block" id="Root._flags_for_value"><a class="viewcode-back" href="../../parts/rio/api/properties_item.html#rio.properties_item.Root._flags_for_value">[docs]</a>    <span class="k">def</span> <span class="nf">_flags_for_value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: флаг, запрещающий редактирование контейнера.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">ItemIsEnabled</span>
+
+</div>
+<div class="viewcode-block" id="Root._second_column_display_role"><a class="viewcode-back" href="../../parts/rio/api/properties_item.html#rio.properties_item.Root._second_column_display_role">[docs]</a>    <span class="k">def</span> <span class="nf">_second_column_display_role</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Значение контейнера не подлежит редактированию,</span>
+<span class="sd">        поэтому возвращается пустая строка. Однако здесь можно, например,</span>
+<span class="sd">        вывести краткий комментарий по назначению контейнера.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s">&#39;&#39;</span>
+
+</div>
+<div class="viewcode-block" id="Root.restore_from_params"><a class="viewcode-back" href="../../parts/rio/api/properties_item.html#rio.properties_item.Root.restore_from_params">[docs]</a>    <span class="k">def</span> <span class="nf">restore_from_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Функция выстраивает иерархию с вершиной self в соответствии с данными params.</span>
+
+<span class="sd">        :type params: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="nb">id</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="n">part</span> <span class="o">=</span> <span class="n">Root</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+                <span class="n">part</span><span class="o">.</span><span class="n">restore_from_params</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ValueForGenerator</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="s">&#39;const generator&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="Root.generator"><a class="viewcode-back" href="../../parts/rio/api/properties_item.html#rio.properties_item.Root.generator">[docs]</a>    <span class="k">def</span> <span class="nf">generator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Функция возвращает генератор исходных данных, в соответствии с иерархией self.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">rissile.wo.data_generator</span> <span class="kn">import</span> <span class="n">WorldObjectInitDataGenerator</span>
+        <span class="n">wo_init_data_generator</span> <span class="o">=</span> <span class="n">WorldObjectInitDataGenerator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parts</span><span class="p">:</span>
+            <span class="n">part</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">wo_init_data_generator</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">wo_init_data_generator</span>
+
+</div>
+    <span class="k">def</span> <span class="nf">fill</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wo_init_data_generator</span><span class="p">):</span>
+        <span class="n">wo_init_data_generator</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generator</span><span class="p">())</span>
+</pre></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Rissile 0.0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, ОАО МКБ &#34;Факел&#34;.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

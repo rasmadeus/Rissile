@@ -1,0 +1,344 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>rissile.wo.world_object &mdash; Rissile 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Rissile 0.0.1 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Rissile 0.0.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for rissile.wo.world_object</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+
+
+<span class="n">__author__</span><span class="o">=</span><span class="s">&quot;K. Kulikov&quot;</span>
+<span class="n">__date__</span> <span class="o">=</span><span class="s">&quot;$Jun 06, 2014 10:30:15 AM$&quot;</span>
+
+
+<span class="kn">from</span> <span class="nn">rissile.tools.quaternion</span> <span class="kn">import</span> <span class="n">Quaternion</span>
+<span class="kn">from</span> <span class="nn">rissile.tools.vector</span> <span class="kn">import</span> <span class="n">Vector</span>
+<span class="kn">from</span> <span class="nn">rissile.tools.assistants</span> <span class="kn">import</span> <span class="n">about_zero</span>
+
+
+<div class="viewcode-block" id="WorldObject"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject">[docs]</a><span class="k">class</span> <span class="nc">WorldObject</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Класс предоставляет интерфейс для численного расчёта предметной модели.</span>
+<span class="sd">    Порядок работы с объектом рекомендуется выполнять следующим образом:</span>
+
+<span class="sd">    &gt;&gt;&gt; obj = WorldObject(&#39;obj&#39;, 0.001)           # Создание объекта.</span>
+<span class="sd">    &gt;&gt;&gt; obj.init({&#39;H, м&#39;: 1000})                  # Устанавливаем начальное состояние объекта.</span>
+<span class="sd">    &gt;&gt;&gt; obj.prepare_for_stepping()                # Подготавливаем объект к счёту.</span>
+<span class="sd">    &gt;&gt;&gt; for tick in range(1000): obj.do_step()    # Выполнить расчёт состояний объекта.</span>
+<span class="sd">    &gt;&gt;&gt; obj.call_out_agent(lambda id, buffer: id) # Обработаем массив свойств, описывающих состояние объекта.</span>
+<span class="sd">    &#39;obj&#39;</span>
+<span class="sd">    &gt;&gt;&gt; obj.time()</span>
+<span class="sd">    1.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Инициализация общих для всех объектов параметров.</span>
+
+<span class="sd">        :param id: идентификатор объекта.</span>
+<span class="sd">        :type id: str</span>
+<span class="sd">        :param step: шаг интегрирования объекта.</span>
+<span class="sd">        :type step: float</span>
+<span class="sd">        :param owner: владелец объекта.</span>
+<span class="sd">        :type owner: WorldObject</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="nb">id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">=</span> <span class="n">step</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_owner</span> <span class="o">=</span> <span class="n">owner</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parts</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">owner</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">owner</span><span class="o">.</span><span class="n">_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="WorldObject.init"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject.init">[docs]</a>    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Функция приводит объект в начальное состояние. До начала счёта.</span>
+
+<span class="sd">        :param params: словарь со значениями.</span>
+<span class="sd">        :type params: dict(str: value)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">init_values</span><span class="p">():</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Функция производит инициализацию атрибутов, необходимых для</span>
+<span class="sd">            расчёта времени и сохранения состояний объекта.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_step_count</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c"># Не было совершено ни одного такта счёта.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span> <span class="o">=</span> <span class="p">{}</span>     <span class="c"># Забуферизованные состояния объекта отсутствуют.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_init_buffer</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_save_state</span><span class="p">()</span>    <span class="c"># После инициализации, сохраним начальное состояние объекта.</span>
+
+
+        <span class="k">def</span> <span class="nf">init_params</span><span class="p">():</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Функция производит разбор входных параметров.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_init</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+
+
+        <span class="k">def</span> <span class="nf">init_parts</span><span class="p">():</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Функция инициализирует составные части self.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parts</span><span class="p">:</span>
+                <span class="n">part</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="bp">None</span> <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">part</span><span class="o">.</span><span class="n">_id</span><span class="p">))</span>
+
+
+        <span class="n">init_params</span><span class="p">()</span>
+        <span class="n">init_parts</span><span class="p">()</span>
+        <span class="n">init_values</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="WorldObject.prepare_for_stepping"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject.prepare_for_stepping">[docs]</a>    <span class="k">def</span> <span class="nf">prepare_for_stepping</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Функция подготавливает объект к счёту. Должна быть вызвана до начала счёта.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_frequency_rate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">min_step</span><span class="p">())</span>
+
+</div>
+<div class="viewcode-block" id="WorldObject.time"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject.time">[docs]</a>    <span class="k">def</span> <span class="nf">time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Время соответствующее текущему состоянию объекта.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step_count</span>
+
+</div>
+<div class="viewcode-block" id="WorldObject.id"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject.id">[docs]</a>    <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: идентификатор объекта.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span>
+    
+</div>
+<div class="viewcode-block" id="WorldObject.do_step"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject.do_step">[docs]</a>    <span class="k">def</span> <span class="nf">do_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Функция расчитывает состояние объекта на следующий такт.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">do_parts_step</span><span class="p">():</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Функция просчитывает состояние частей self.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parts</span><span class="p">:</span>
+                <span class="n">part</span><span class="o">.</span><span class="n">do_step</span><span class="p">()</span>
+
+
+        <span class="k">def</span> <span class="nf">try_do_step</span><span class="p">():</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Функция производит расчёт состояния объекта на текущий момент времени, если настало очередь делать это.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_time_do_step</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_do_step</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_step_count</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_missed_steps_count</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_save_state</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_missed_steps_count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+
+        <span class="n">do_parts_step</span><span class="p">()</span>
+        <span class="n">try_do_step</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="WorldObject.call_out_agent"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject.call_out_agent">[docs]</a>    <span class="k">def</span> <span class="nf">call_out_agent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out_agent</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: результат работы out_agent(идентификатор объекта, буферизованные данные)</span>
+<span class="sd">        :param out_agent: функция обработчик буферизованных состояний объекта.</span>
+<span class="sd">        :type out_agent: function(str, dict)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">out_agent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="WorldObject.min_step"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject.min_step">[docs]</a>    <span class="k">def</span> <span class="nf">min_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: минимум из шагов счёта self и его частей.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">min_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span>
+        <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parts</span><span class="p">:</span>
+            <span class="n">part_min_step</span> <span class="o">=</span> <span class="n">part</span><span class="o">.</span><span class="n">min_step</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">part_min_step</span> <span class="o">&lt;</span> <span class="n">min_step</span><span class="p">:</span>
+                <span class="n">min_step</span> <span class="o">=</span> <span class="n">part_min_step</span>
+        <span class="k">return</span> <span class="n">min_step</span>
+
+</div>
+<div class="viewcode-block" id="WorldObject.step"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: шаг счёта объекта.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span>
+
+</div>
+<div class="viewcode-block" id="WorldObject.is_time_do_step"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject.is_time_do_step">[docs]</a>    <span class="k">def</span> <span class="nf">is_time_do_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: признак необходимости счёта объекта.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frequency_rate</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_missed_steps_count</span>
+
+</div>
+<div class="viewcode-block" id="WorldObject.serialize"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject.serialize">[docs]</a>    <span class="k">def</span> <span class="nf">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: словарь с сериализованным self.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_serialize</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parts</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="n">part</span><span class="o">.</span><span class="n">id</span><span class="p">()]</span> <span class="o">=</span> <span class="n">part</span><span class="o">.</span><span class="n">serialize</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">params</span>
+
+</div>
+<div class="viewcode-block" id="WorldObject._set_frequency_rate"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject._set_frequency_rate">[docs]</a>    <span class="k">def</span> <span class="nf">_set_frequency_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_step</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Функция выполняет подготовку объекта к синхронному счёту.</span>
+
+<span class="sd">        :param min_step: минимум из шагов счёта self и его частей.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_frequency_rate</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">/</span> <span class="n">min_step</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_missed_steps_count</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parts</span><span class="p">:</span>
+            <span class="n">part</span><span class="o">.</span><span class="n">_set_frequency_rate</span><span class="p">(</span><span class="n">min_step</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="WorldObject._add_id_to_buffer"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject._add_id_to_buffer">[docs]</a>    <span class="k">def</span> <span class="nf">_add_id_to_buffer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Добавляет к буферу, хранящему состояние объекта новый свойство.</span>
+
+<span class="sd">        :param id: идентификатор свойства.</span>
+<span class="sd">        :type id: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+</div>
+<div class="viewcode-block" id="WorldObject._save_value"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject._save_value">[docs]</a>    <span class="k">def</span> <span class="nf">_save_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Функция буферизует переданное значение.</span>
+
+<span class="sd">        :param id: идентификатор свойства. Должен быть добавлен в функции _init_buffer.</span>
+<span class="sd">        :type id: str</span>
+<span class="sd">        :param value: значение свойства на текущий момент времени.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="WorldObject._init_buffer"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject._init_buffer">[docs]</a>    <span class="k">def</span> <span class="nf">_init_buffer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        В этом методе произведите инициализацию свойсв буфера при</span>
+<span class="sd">        помощи функции _add_id_to_buffer</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_id_to_buffer</span><span class="p">(</span><span class="s">&#39;t,c&#39;</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="WorldObject._save_state"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject._save_state">[docs]</a>    <span class="k">def</span> <span class="nf">_save_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        В этом методе выполните буферизацию состояния объекта при</span>
+<span class="sd">        помощи функции _save_value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_save_value</span><span class="p">(</span><span class="s">&#39;t,c&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+
+</div>
+<div class="viewcode-block" id="WorldObject._init"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject._init">[docs]</a>    <span class="k">def</span> <span class="nf">_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        В этом методе выполняйте инициализацию параметров, уникальных для self.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+</div>
+<div class="viewcode-block" id="WorldObject._do_step"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject._do_step">[docs]</a>    <span class="k">def</span> <span class="nf">_do_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Изменяйте состояние объекта в этой функции.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+</div>
+<div class="viewcode-block" id="WorldObject._serialize"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject._serialize">[docs]</a>    <span class="k">def</span> <span class="nf">_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Выполняйте сериализацию объекта в этой функции.</span>
+
+<span class="sd">        :param params: структура, подлежащая сериализации.</span>
+<span class="sd">        :type params: dict(str: float | int | bool | str)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Rissile 0.0.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, ОАО МКБ &#34;Факел&#34;.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>
