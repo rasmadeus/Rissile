@@ -301,7 +301,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Заполняет генератор значением, соответствующему self.</span>
 
-<span class="sd">        :type wo_init_data_generator: rissile.wo._data_generator.WorldObjectDataGenerator</span>
+<span class="sd">        :type wo_init_data_generator: rissile.wo._data_generator.WorldObjectTestDataGenerator</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">def</span> <span class="nf">params</span><span class="p">():</span>
             <span class="sd">&quot;&quot;&quot;</span>
@@ -363,8 +363,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Функция возвращает генератор исходных данных, в соответствии с иерархией self.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">rissile.wo.data_generator</span> <span class="kn">import</span> <span class="n">WorldObjectInitDataGenerator</span>
-        <span class="n">wo_init_data_generator</span> <span class="o">=</span> <span class="n">WorldObjectInitDataGenerator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">)</span>
+        <span class="kn">from</span> <span class="nn">rissile.wo.data_generator</span> <span class="kn">import</span> <span class="n">WorldObjectTestInitDataGenerator</span>
+        <span class="n">wo_init_data_generator</span> <span class="o">=</span> <span class="n">WorldObjectTestInitDataGenerator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parts</span><span class="p">:</span>
             <span class="n">part</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">wo_init_data_generator</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">wo_init_data_generator</span>

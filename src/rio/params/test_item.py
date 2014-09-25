@@ -5,10 +5,9 @@ __author__="K. Kulikov"
 __date__ ="$08.07.2014 8:22:30$"
 
 
-import unittest
 from rio.params.item import ValueForGenerator
 from rio.params.item import Root
-from rissile.wo.data_generator import WorldObjectInitDataGenerator
+from rissile.wo.data_generator import WorldObjectTestInitDataGenerator
 from rissile.wo.test_data_generator import GeneratorTester
 
 
@@ -25,7 +24,7 @@ class TestValueGenerator(GeneratorTester):
             return value
 
 
-        generator = WorldObjectInitDataGenerator('wo generator')
+        generator = WorldObjectTestInitDataGenerator('wo generator')
         create_range_value().fill(generator)
         return generator
 

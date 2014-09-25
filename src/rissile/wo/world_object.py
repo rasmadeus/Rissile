@@ -5,17 +5,37 @@ __author__="K. Kulikov"
 __date__ ="$Jun 06, 2014 10:30:15 AM$"
 
 
-from rissile.tools.quaternion import Quaternion
-from rissile.tools.vector import Vector
-from rissile.tools.assistants import about_zero
-
-
 class WorldObject:
+    
+    def __init__(self):
+        self._is_waiting_for_terminating = True
+    
+    def run(self):
+        while self._is_waiting_for_terminatig or self._is_finish():
+            self._do_step()
+    
+    def terminate(self):
+        self._is_waiting_for_terminating = False
+    
+    def set_origin_state(self, params):
+        pass
+    
+    def call_out_agent(self, agent):
+        pass
+    
+    def _is_finish(self):
+        pass
+
+    def _do_step(self):
+        pass
+    
+
+class WorldObjectTest:
     """
     Класс предоставляет интерфейс для численного расчёта предметной модели.
     Порядок работы с объектом рекомендуется выполнять следующим образом:
 
-    >>> obj = WorldObject('obj', 0.001)           # Создание объекта.
+    >>> obj = WorldObjectTest('obj', 0.001)           # Создание объекта.
     >>> obj.init({'H, м': 1000})                  # Устанавливаем начальное состояние объекта.
     >>> obj.prepare_for_stepping()                # Подготавливаем объект к счёту.
     >>> for tick in range(1000): obj.do_step()    # Выполнить расчёт состояний объекта.
@@ -33,7 +53,7 @@ class WorldObject:
         :param step: шаг интегрирования объекта.
         :type step: float
         :param owner: владелец объекта.
-        :type owner: WorldObject
+        :type owner: WorldObjectTest
         """
         self._id = id
         self._step = step
@@ -89,7 +109,7 @@ class WorldObject:
             Функция производит разбор входных параметров.
             """
             if params is not None:
-                self._init(params)
+                self._init()
 
 
         def init_parts():

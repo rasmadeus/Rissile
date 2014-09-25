@@ -6,18 +6,18 @@ __date__ ="$03.07.2014 8:57:02$"
 
 
 import unittest
-from rissile.wo.world_object import WorldObject
+from rissile.wo.world_object import WorldObjectTest
 from rissile.tools.assistants import is_equals
 
 
-class TestWorldObjectStepping(unittest.TestCase):
+class TestWorldObjectTestStepping(unittest.TestCase):
     def setUp(self):
         def create_objects():
-            self.terra = WorldObject('terra', 0.2)
-            self.missile = WorldObject('missile', 0.3, self.terra)
-            self.aircraft = WorldObject('aircraft', 0.4, self.terra)
-            self.bomb = WorldObject('bomb', 0.1, self.aircraft)
-            self.rocket = WorldObject('rocket', 0.5, self.aircraft)
+            self.terra = WorldObjectTest('terra', 0.2)
+            self.missile = WorldObjectTest('missile', 0.3, self.terra)
+            self.aircraft = WorldObjectTest('aircraft', 0.4, self.terra)
+            self.bomb = WorldObjectTest('bomb', 0.1, self.aircraft)
+            self.rocket = WorldObjectTest('rocket', 0.5, self.aircraft)
             self.objects = (self.terra, self.missile, self.aircraft, self.bomb, self.rocket)
 
 

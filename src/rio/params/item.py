@@ -354,8 +354,8 @@ class ValueForGenerator(Value):
         """
         Метод заполняет переданный генератор значением, соответствующему self.
 
-        :value wo_init_data_generator: Генератор значений для WorldObject.
-        :type wo_init_data_generator: rissile.wo._data_generator.WorldObjectDataGenerator
+        :value wo_init_data_generator: Генератор значений для WorldObjectTest.
+        :type wo_init_data_generator: rissile.wo._data_generator.WorldObjectTestDataGenerator
         """
         def params():
             """
@@ -367,8 +367,8 @@ class ValueForGenerator(Value):
                 params[part._name] = part._value
             return params
 
-        
-        wo_init_data_generator.set_value(self._create_generator(self._name, params()))
+        generator_maker = self._types[self._type]._create_generator()
+        wo_init_data_generator.set_value(generator_maker(self._name, params()))
 
 
     def delegate(self, parent=None):
@@ -456,10 +456,10 @@ class Root(Item):
     def generator(self):
         """
         :return: генератор исходных данных, в соответствии с иерархией self.
-        :rtype: rissile.wo.data_generator.WorldObjectInitDataGenerator
+        :rtype: rissile.wo.data_generator.WorldObjectTestInitDataGenerator
         """
-        from rissile.wo.data_generator import WorldObjectInitDataGenerator
-        wo_init_data_generator = WorldObjectInitDataGenerator(self._name)
+        from rissile.wo.data_generator import WorldObjectTestInitDataGenerator
+        wo_init_data_generator = WorldObjectTestInitDataGenerator(self._name)
         for part in self._parts:
             part.fill(wo_init_data_generator)
         return wo_init_data_generator
@@ -468,6 +468,6 @@ class Root(Item):
     def fill(self, wo_init_data_generator):
         """
         :param wo_init_data_generator: Генератор, к которому нужно добавить значения для генерирования, соответствующие self.
-        :type wo_init_data_generator: rissile.wo.data_generator.WorldObjectInitDataGenerator
+        :type wo_init_data_generator: rissile.wo.data_generator.WorldObjectTestInitDataGenerator
         """
         wo_init_data_generator.set_value(self.generator())

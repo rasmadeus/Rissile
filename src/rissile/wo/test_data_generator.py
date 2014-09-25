@@ -6,38 +6,35 @@ __date__ ="$03.07.2014 16:30:50$"
 
 
 import unittest
-from rissile.wo.data_generator import WorldObjectInitDataGenerator, ValueConstGenerator, ValueRangeGenerator
+from rissile.wo.data_generator import WorldObjectTestInitDataGenerator, ValueConstGenerator, ValueRangeGenerator
 
 
-@unittest.SkipTest
 class GeneratorTester(unittest.TestCase):
     def test_generator(self):
-        right_data = self._right_data()
-        i = 0
-        for value in self._create_generator():
-            self.assertEquals(value, right_data[i])
-            i += 1
+        for value, right_value  in zip(self._create_generator(), self._right_data()):
+            self.assertEquals(value, right_value)
+
 
 
     def _create_generator(self):
-        pass
+        return ()
 
 
     def _right_data(self):
-        pass
+        return ()
 
 
 class TestDataGenerator(GeneratorTester):
     def _create_generator(self):
         def create_generator_of_value():
-            gen = WorldObjectInitDataGenerator('value generator')
+            gen = WorldObjectTestInitDataGenerator('value generator')
             gen.set_value(ValueRangeGenerator('X', {'begin': 0, 'right_border': 1, 'step': 1}))
             gen.set_value(ValueRangeGenerator('H', {'begin': 0, 'right_border': 10, 'step': 2}))
             return gen
 
 
         def create_generator_of_wo_init_data():
-            gen = WorldObjectInitDataGenerator('wo generator')
+            gen = WorldObjectTestInitDataGenerator('wo generator')
             gen.set_value(ValueConstGenerator('V', {'value': 0}))
             gen.set_value(ValueConstGenerator('m', {'value': 2}))
             gen.set_value(create_generator_of_value())

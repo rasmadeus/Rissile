@@ -60,12 +60,12 @@
 <span class="kn">from</span> <span class="nn">rissile.tools.assistants</span> <span class="kn">import</span> <span class="n">about_zero</span>
 
 
-<div class="viewcode-block" id="WorldObject"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject">[docs]</a><span class="k">class</span> <span class="nc">WorldObject</span><span class="p">:</span>
+<div class="viewcode-block" id="WorldObjectTest"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObjectTest">[docs]</a><span class="k">class</span> <span class="nc">WorldObjectTest</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Класс предоставляет интерфейс для численного расчёта предметной модели.</span>
 <span class="sd">    Порядок работы с объектом рекомендуется выполнять следующим образом:</span>
 
-<span class="sd">    &gt;&gt;&gt; obj = WorldObject(&#39;obj&#39;, 0.001)           # Создание объекта.</span>
+<span class="sd">    &gt;&gt;&gt; obj = WorldObjectTest(&#39;obj&#39;, 0.001)           # Создание объекта.</span>
 <span class="sd">    &gt;&gt;&gt; obj.init({&#39;H, м&#39;: 1000})                  # Устанавливаем начальное состояние объекта.</span>
 <span class="sd">    &gt;&gt;&gt; obj.prepare_for_stepping()                # Подготавливаем объект к счёту.</span>
 <span class="sd">    &gt;&gt;&gt; for tick in range(1000): obj.do_step()    # Выполнить расчёт состояний объекта.</span>
@@ -83,7 +83,7 @@
 <span class="sd">        :param step: шаг интегрирования объекта.</span>
 <span class="sd">        :type step: float</span>
 <span class="sd">        :param owner: владелец объекта.</span>
-<span class="sd">        :type owner: WorldObject</span>
+<span class="sd">        :type owner: WorldObjectTest</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="nb">id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">=</span> <span class="n">step</span>
@@ -93,7 +93,7 @@
             <span class="n">owner</span><span class="o">.</span><span class="n">_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="WorldObject.init"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject.init">[docs]</a>    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="WorldObjectTest.init"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObjectTest.init">[docs]</a>    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Функция приводит объект в начальное состояние. До начала счёта.</span>
 
@@ -132,28 +132,28 @@
         <span class="n">init_values</span><span class="p">()</span>
 
 </div>
-<div class="viewcode-block" id="WorldObject.prepare_for_stepping"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject.prepare_for_stepping">[docs]</a>    <span class="k">def</span> <span class="nf">prepare_for_stepping</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="WorldObjectTest.prepare_for_stepping"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObjectTest.prepare_for_stepping">[docs]</a>    <span class="k">def</span> <span class="nf">prepare_for_stepping</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Функция подготавливает объект к счёту. Должна быть вызвана до начала счёта.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_frequency_rate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">min_step</span><span class="p">())</span>
 
 </div>
-<div class="viewcode-block" id="WorldObject.time"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject.time">[docs]</a>    <span class="k">def</span> <span class="nf">time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="WorldObjectTest.time"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObjectTest.time">[docs]</a>    <span class="k">def</span> <span class="nf">time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Время соответствующее текущему состоянию объекта.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step_count</span>
 
 </div>
-<div class="viewcode-block" id="WorldObject.id"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject.id">[docs]</a>    <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="WorldObjectTest.id"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObjectTest.id">[docs]</a>    <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :return: идентификатор объекта.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span>
     
 </div>
-<div class="viewcode-block" id="WorldObject.do_step"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject.do_step">[docs]</a>    <span class="k">def</span> <span class="nf">do_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="WorldObjectTest.do_step"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObjectTest.do_step">[docs]</a>    <span class="k">def</span> <span class="nf">do_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Функция расчитывает состояние объекта на следующий такт.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -182,7 +182,7 @@
         <span class="n">try_do_step</span><span class="p">()</span>
 
 </div>
-<div class="viewcode-block" id="WorldObject.call_out_agent"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject.call_out_agent">[docs]</a>    <span class="k">def</span> <span class="nf">call_out_agent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out_agent</span><span class="p">):</span>
+<div class="viewcode-block" id="WorldObjectTest.call_out_agent"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObjectTest.call_out_agent">[docs]</a>    <span class="k">def</span> <span class="nf">call_out_agent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out_agent</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :return: результат работы out_agent(идентификатор объекта, буферизованные данные)</span>
 <span class="sd">        :param out_agent: функция обработчик буферизованных состояний объекта.</span>
@@ -191,7 +191,7 @@
         <span class="k">return</span> <span class="n">out_agent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="WorldObject.min_step"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject.min_step">[docs]</a>    <span class="k">def</span> <span class="nf">min_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="WorldObjectTest.min_step"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObjectTest.min_step">[docs]</a>    <span class="k">def</span> <span class="nf">min_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :return: минимум из шагов счёта self и его частей.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -203,21 +203,21 @@
         <span class="k">return</span> <span class="n">min_step</span>
 
 </div>
-<div class="viewcode-block" id="WorldObject.step"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="WorldObjectTest.step"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObjectTest.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :return: шаг счёта объекта.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span>
 
 </div>
-<div class="viewcode-block" id="WorldObject.is_time_do_step"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject.is_time_do_step">[docs]</a>    <span class="k">def</span> <span class="nf">is_time_do_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="WorldObjectTest.is_time_do_step"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObjectTest.is_time_do_step">[docs]</a>    <span class="k">def</span> <span class="nf">is_time_do_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :return: признак необходимости счёта объекта.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frequency_rate</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_missed_steps_count</span>
 
 </div>
-<div class="viewcode-block" id="WorldObject.serialize"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject.serialize">[docs]</a>    <span class="k">def</span> <span class="nf">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="WorldObjectTest.serialize"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObjectTest.serialize">[docs]</a>    <span class="k">def</span> <span class="nf">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :return: словарь с сериализованным self.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -228,7 +228,7 @@
         <span class="k">return</span> <span class="n">params</span>
 
 </div>
-<div class="viewcode-block" id="WorldObject._set_frequency_rate"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject._set_frequency_rate">[docs]</a>    <span class="k">def</span> <span class="nf">_set_frequency_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_step</span><span class="p">):</span>
+<div class="viewcode-block" id="WorldObjectTest._set_frequency_rate"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObjectTest._set_frequency_rate">[docs]</a>    <span class="k">def</span> <span class="nf">_set_frequency_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_step</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Функция выполняет подготовку объекта к синхронному счёту.</span>
 
@@ -240,7 +240,7 @@
             <span class="n">part</span><span class="o">.</span><span class="n">_set_frequency_rate</span><span class="p">(</span><span class="n">min_step</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="WorldObject._add_id_to_buffer"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject._add_id_to_buffer">[docs]</a>    <span class="k">def</span> <span class="nf">_add_id_to_buffer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+<div class="viewcode-block" id="WorldObjectTest._add_id_to_buffer"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObjectTest._add_id_to_buffer">[docs]</a>    <span class="k">def</span> <span class="nf">_add_id_to_buffer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Добавляет к буферу, хранящему состояние объекта новый свойство.</span>
 
@@ -250,7 +250,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
 </div>
-<div class="viewcode-block" id="WorldObject._save_value"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject._save_value">[docs]</a>    <span class="k">def</span> <span class="nf">_save_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<div class="viewcode-block" id="WorldObjectTest._save_value"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObjectTest._save_value">[docs]</a>    <span class="k">def</span> <span class="nf">_save_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Функция буферизует переданное значение.</span>
 
@@ -261,7 +261,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="WorldObject._init_buffer"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject._init_buffer">[docs]</a>    <span class="k">def</span> <span class="nf">_init_buffer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="WorldObjectTest._init_buffer"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObjectTest._init_buffer">[docs]</a>    <span class="k">def</span> <span class="nf">_init_buffer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        В этом методе произведите инициализацию свойсв буфера при</span>
 <span class="sd">        помощи функции _add_id_to_buffer</span>
@@ -269,7 +269,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_id_to_buffer</span><span class="p">(</span><span class="s">&#39;t,c&#39;</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="WorldObject._save_state"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject._save_state">[docs]</a>    <span class="k">def</span> <span class="nf">_save_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="WorldObjectTest._save_state"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObjectTest._save_state">[docs]</a>    <span class="k">def</span> <span class="nf">_save_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        В этом методе выполните буферизацию состояния объекта при</span>
 <span class="sd">        помощи функции _save_value.</span>
@@ -277,21 +277,21 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_save_value</span><span class="p">(</span><span class="s">&#39;t,c&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
 
 </div>
-<div class="viewcode-block" id="WorldObject._init"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject._init">[docs]</a>    <span class="k">def</span> <span class="nf">_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+<div class="viewcode-block" id="WorldObjectTest._init"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObjectTest._init">[docs]</a>    <span class="k">def</span> <span class="nf">_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        В этом методе выполняйте инициализацию параметров, уникальных для self.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
 </div>
-<div class="viewcode-block" id="WorldObject._do_step"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject._do_step">[docs]</a>    <span class="k">def</span> <span class="nf">_do_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="WorldObjectTest._do_step"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObjectTest._do_step">[docs]</a>    <span class="k">def</span> <span class="nf">_do_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Изменяйте состояние объекта в этой функции.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
 </div>
-<div class="viewcode-block" id="WorldObject._serialize"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObject._serialize">[docs]</a>    <span class="k">def</span> <span class="nf">_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+<div class="viewcode-block" id="WorldObjectTest._serialize"><a class="viewcode-back" href="../../../parts/rissile/wo/world_object.html#rissile.wo.world_object.WorldObjectTest._serialize">[docs]</a>    <span class="k">def</span> <span class="nf">_serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Выполняйте сериализацию объекта в этой функции.</span>
 

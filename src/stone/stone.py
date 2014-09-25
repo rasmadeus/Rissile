@@ -11,16 +11,16 @@ __date__ ="$04.07.2014 9:14:59$"
 
 
 from rissile.tools.angles import Radian
-from rissile.wo.world_object import WorldObject
+from rissile.wo.world_object import WorldObjectTest
 
-class FlyingStone(WorldObject):
+class FlyingStone(WorldObjectTest):
     """
     Класс реализует модель полёта камня на Земле с нулевой высоты
     без учёта сопротивления воздуха в плоскости XY. Данный пример ознакомит пользователя
     с принципами работы с библиотекой wo.
     """
     def __init__(self):
-        WorldObject.__init__(self, 'flying_stone', 0.001)
+        WorldObjectTest.__init__(self, 'flying_stone', 0.001)
 
 
     def _init(self):

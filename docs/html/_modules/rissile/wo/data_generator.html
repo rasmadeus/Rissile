@@ -57,7 +57,7 @@
 
 <div class="viewcode-block" id="Generator"><a class="viewcode-back" href="../../../parts/rissile/wo/data_generator.html#rissile.wo.data_generator.Generator">[docs]</a><span class="k">class</span> <span class="nc">Generator</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Каждый генератор данных для WorldObject должен иметь идентификатор.</span>
+<span class="sd">    Каждый генератор данных для WorldObjectTest должен иметь идентификатор.</span>
 <span class="sd">    Класс описывает интерфейс взаимодействия с этим свойством.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="Generator.__init__"><a class="viewcode-back" href="../../../parts/rissile/wo/data_generator.html#rissile.wo.data_generator.Generator.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
@@ -186,11 +186,11 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">left</span><span class="p">()</span> <span class="o">+</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="p">()</span>
 
 </div>
-<div class="viewcode-block" id="WorldObjectInitDataGenerator"><a class="viewcode-back" href="../../../parts/rissile/wo/data_generator.html#rissile.wo.data_generator.WorldObjectInitDataGenerator">[docs]</a><span class="k">class</span> <span class="nc">WorldObjectInitDataGenerator</span><span class="p">(</span><span class="n">Generator</span><span class="p">):</span>
+<div class="viewcode-block" id="WorldObjectTestInitDataGenerator"><a class="viewcode-back" href="../../../parts/rissile/wo/data_generator.html#rissile.wo.data_generator.WorldObjectTestInitDataGenerator">[docs]</a><span class="k">class</span> <span class="nc">WorldObjectTestInitDataGenerator</span><span class="p">(</span><span class="n">Generator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Класс генерирует наборы значений вида {&#39;id&#39;: value, ...}.</span>
 
-<span class="sd">    &gt;&gt;&gt; data = WorldObjectInitDataGenerator(&#39;data&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; data = WorldObjectTestInitDataGenerator(&#39;data&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; data.set_value(ValueConstGenerator(&#39;X&#39;, {&#39;value&#39;: 1}))</span>
 <span class="sd">    &gt;&gt;&gt; data.set_value(ValueRangeGenerator(&#39;Y&#39;, {&#39;begin&#39;: 0, &#39;right_border&#39;: 2, &#39;step&#39;: 1}))</span>
 <span class="sd">    &gt;&gt;&gt; for init_data in data: print(init_data)</span>
@@ -203,17 +203,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_values</span> <span class="o">=</span> <span class="p">[]</span>
         
         
-<div class="viewcode-block" id="WorldObjectInitDataGenerator.set_value"><a class="viewcode-back" href="../../../parts/rissile/wo/data_generator.html#rissile.wo.data_generator.WorldObjectInitDataGenerator.set_value">[docs]</a>    <span class="k">def</span> <span class="nf">set_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<div class="viewcode-block" id="WorldObjectTestInitDataGenerator.set_value"><a class="viewcode-back" href="../../../parts/rissile/wo/data_generator.html#rissile.wo.data_generator.WorldObjectTestInitDataGenerator.set_value">[docs]</a>    <span class="k">def</span> <span class="nf">set_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Добавляет значение для генерирования.</span>
 
 <span class="sd">        :param value: свойство, значение которого необходимо генерировать.</span>
-<span class="sd">        :type value: ValueGenerator или WorldObjectInitDataGenerator</span>
+<span class="sd">        :type value: ValueGenerator или WorldObjectTestInitDataGenerator</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="WorldObjectInitDataGenerator._fill"><a class="viewcode-back" href="../../../parts/rissile/wo/data_generator.html#rissile.wo.data_generator.WorldObjectInitDataGenerator._fill">[docs]</a>    <span class="k">def</span> <span class="nf">_fill</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">next</span><span class="p">,</span> <span class="n">nexts</span><span class="p">):</span>
+<div class="viewcode-block" id="WorldObjectTestInitDataGenerator._fill"><a class="viewcode-back" href="../../../parts/rissile/wo/data_generator.html#rissile.wo.data_generator.WorldObjectTestInitDataGenerator._fill">[docs]</a>    <span class="k">def</span> <span class="nf">_fill</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">next</span><span class="p">,</span> <span class="n">nexts</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Функция осуществляет перебор зарегистрированных значения.</span>
 

@@ -7,7 +7,7 @@ __date__ ="$03.07.2014 15:19:08$"
 
 class Generator:
     """
-    Каждый генератор данных для WorldObject должен иметь идентификатор.
+    Каждый генератор данных для WorldObjectTest должен иметь идентификатор.
     Класс описывает интерфейс взаимодействия с этим свойством.
     """
     def __init__(self, id):
@@ -136,11 +136,11 @@ class ValueRandomGenerator(ValueGenerator):
         return self.left() + random.random() * self.interval()
 
 
-class WorldObjectInitDataGenerator(Generator):
+class WorldObjectTestInitDataGenerator(Generator):
     """
     Класс генерирует наборы значений вида {'id': value, ...}.
 
-    >>> data = WorldObjectInitDataGenerator('data')
+    >>> data = WorldObjectTestInitDataGenerator('data')
     >>> data.set_value(ValueConstGenerator('X', {'value': 1}))
     >>> data.set_value(ValueRangeGenerator('Y', {'begin': 0, 'right_border': 2, 'step': 1}))
     >>> for init_data in data: print(init_data)
@@ -158,7 +158,7 @@ class WorldObjectInitDataGenerator(Generator):
         Добавляет значение для генерирования.
 
         :param value: свойство, значение которого необходимо генерировать.
-        :type value: ValueGenerator или WorldObjectInitDataGenerator
+        :type value: ValueGenerator или WorldObjectTestInitDataGenerator
         """
         self._values.append(value)
 
