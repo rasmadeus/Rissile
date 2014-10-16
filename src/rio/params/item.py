@@ -210,6 +210,10 @@ class ValueEditable(Value):
         :return: делегата QDoubleSpinBox для редактирования значения.
         :rtype QtGui.QItemDelegate.
         """
+        pass
+    
+class ValueFloatEditable(ValueEditable):
+    def delegate(self, parent=None):
         class Delegate(QtGui.QItemDelegate):
             def __init__(self, parent=parent):
                 QtGui.QItemDelegate.__init__(self, parent)
@@ -224,6 +228,29 @@ class ValueEditable(Value):
 
             def setEditorData(self, editor, index):
                 editor.setValue(float(index.data().toString()))
+
+
+            def setModelData(self, editor, model, index):
+                model.setData(index, editor.value())
+
+        return Delegate(parent)
+    
+class ValueUnsignedIntDelegate(ValueEditable):
+    def delegate(self, parent=None):
+        class Delegate(QtGui.QItemDelegate):
+            def __init__(self, parent=parent):
+                QtGui.QItemDelegate.__init__(self, parent)
+
+
+            def createEditor(self, parent, option, index):
+                editor = QtGui.QSpinBox(parent)
+                editor.setMinimum(0)
+                editor.setMaximum(1000000.0)
+                return editor
+
+
+            def setEditorData(self, editor, index):
+                editor.setValue(int(index.data().toString()))
 
 
             def setModelData(self, editor, model, index):
@@ -269,7 +296,7 @@ class ValueForGenerator(Value):
 
             def _create_parts(self, owner):
                 return (
-                    ValueEditable('value', u'Значение', owner),
+                    ValueFloatEditable('value', u'Значение', owner),
                 )
 
 
@@ -285,9 +312,9 @@ class ValueForGenerator(Value):
 
             def _create_parts(self, owner):
                 return (
-                    ValueEditable('begin', u'Первое значение',owner),
-                    ValueEditable('right_border', u'Правая граница', owner),
-                    ValueEditable('step', u'Шаг итерирования', owner)
+                    ValueFloatEditable('begin', u'Первое значение',owner),
+                    ValueFloatEditable('right_border', u'Правая граница', owner),
+                    ValueFloatEditable('step', u'Шаг итерирования', owner)
                 )
 
 
@@ -303,8 +330,8 @@ class ValueForGenerator(Value):
 
             def _create_parts(self, owner):
                 return (
-                    ValueEditable('left_border', u'Левая граница', owner),
-                    ValueEditable('right_border', u'Правая граница', owner)
+                    ValueFloatEditable('left_border', u'Левая граница', owner),
+                    ValueFloatEditable('right_border', u'Правая граница', owner)
                 )
 
 
@@ -414,7 +441,7 @@ class Root(Item):
         :return: жирный шрифт, установленный по умолчанию.
         :rtype: QFont()
         """
-        font = QtCore.QFont()
+        font = QtGui.QFont()
         font.setBold(True)
         return font
 
@@ -471,3 +498,25 @@ class Root(Item):
         :type wo_init_data_generator: rissile.wo.data_generator.WorldObjectTestInitDataGenerator
         """
         wo_init_data_generator.set_value(self.generator())
+        
+        
+class RootRepeater(Item):
+    
+    def __init__(self, name, owner=None):
+        Item.__init__(self, name, owner)
+        self._repeater = ValueUnsignedIntDelegate('repeater', 'repeater', self)
+        self._root = Root('model', self)    
+        
+       
+    def restore_from_params(self, params):
+        self._root.restore_from_params(params)
+        
+        
+    def generator(self):
+        from rissile.wo.data_generator import WorldObjectTestInitDataGenerator
+        from rissile.wo.data_generator import ValueRangeGenerator
+        wo_init_data_generator = WorldObjectTestInitDataGenerator(self._name)
+        value_range_generator = ValueRangeGenerator('range_generator', {'begin': 0, 'right_border': self._repeater.value() , 'step': 1})
+        wo_init_data_generator.set_value(value_range_generator)
+        wo_init_data_generator.set_value(self._root.generator())
+        return wo_init_data_generator

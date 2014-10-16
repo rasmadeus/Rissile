@@ -5,15 +5,14 @@ __author__="K. Kulikov"
 __date__ ="$25.06.2014 8:30:39$"
 
 
-import stone
 from PyQt4 import QtCore
-from rio.params.item import Root
+from rio.params.item import RootRepeater, Root
 
 
 class Model(QtCore.QAbstractItemModel):
     def __init__(self, parent=None):
         QtCore.QAbstractItemModel.__init__(self, parent)
-        self._root = Root('root', None)
+        self._root = RootRepeater('root', None)
 
 
     def restore_from_params(self, params):
