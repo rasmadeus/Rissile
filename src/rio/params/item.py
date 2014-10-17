@@ -244,7 +244,7 @@ class ValueUnsignedIntDelegate(ValueEditable):
 
             def createEditor(self, parent, option, index):
                 editor = QtGui.QSpinBox(parent)
-                editor.setMinimum(0)
+                editor.setMinimum(1)
                 editor.setMaximum(1000000.0)
                 return editor
 
@@ -291,52 +291,52 @@ class ValueForGenerator(Value):
 
         class DataForConstGenerator(Data):
             def name(self):
-                return u'Константа'
+                return QtCore.QCoreApplication.translate('rio_params_item', 'const value')
 
 
             def _create_parts(self, owner):
                 return (
-                    ValueFloatEditable('value', u'Значение', owner),
+                    ValueFloatEditable('value', QtCore.QCoreApplication.translate('rio_params_item', 'value'), owner),
                 )
 
 
             def _create_generator(self):
-                from rissile.wo.data_generator import ValueConstGenerator
+                from rio.params.data_generator import ValueConstGenerator
                 return ValueConstGenerator
 
 
         class DataForRangeGenerator(Data):
             def name(self):
-                return u'Интервал'
+                return QtCore.QCoreApplication.translate('rio_params_item', 'interval')
 
 
             def _create_parts(self, owner):
                 return (
-                    ValueFloatEditable('begin', u'Первое значение',owner),
-                    ValueFloatEditable('right_border', u'Правая граница', owner),
-                    ValueFloatEditable('step', u'Шаг итерирования', owner)
+                    ValueFloatEditable('begin', QtCore.QCoreApplication.translate('rio_params_item', 'start value'), owner),
+                    ValueFloatEditable('right_border', QtCore.QCoreApplication.translate('rio_params_item', 'right border'), owner), 
+                    ValueFloatEditable('step', QtCore.QCoreApplication.translate('rio_params_item', 'step'), owner)
                 )
 
 
             def _create_generator(self):
-                from rissile.wo.data_generator import ValueRangeGenerator
+                from rio.params.data_generator import ValueRangeGenerator
                 return ValueRangeGenerator
 
 
         class DataForRandomGenerator(Data):
             def name(self):
-                return u'Случайное число'
+                return QtCore.QCoreApplication.translate('rio_params_item', 'random value')
 
 
             def _create_parts(self, owner):
                 return (
-                    ValueFloatEditable('left_border', u'Левая граница', owner),
-                    ValueFloatEditable('right_border', u'Правая граница', owner)
+                    ValueFloatEditable('left_border', QtCore.QCoreApplication.translate('rio_params_item', 'left border'), owner),
+                    ValueFloatEditable('right_border', QtCore.QCoreApplication.translate('rio_params_item', 'right border'), owner)
                 )
 
 
             def _create_generator(self):
-                from rissile.wo.data_generator import ValueRandomGenerator
+                from rio.params.data_generator import ValueRandomGenerator
                 return ValueRandomGenerator
 
 
@@ -483,10 +483,10 @@ class Root(Item):
     def generator(self):
         """
         :return: генератор исходных данных, в соответствии с иерархией self.
-        :rtype: rissile.wo.data_generator.WorldObjectTestInitDataGenerator
+        :rtype: rissile.wo.data_generator.ParamsGenerator
         """
-        from rissile.wo.data_generator import WorldObjectTestInitDataGenerator
-        wo_init_data_generator = WorldObjectTestInitDataGenerator(self._name)
+        from rio.params.data_generator import ParamsGenerator
+        wo_init_data_generator = ParamsGenerator(self._name)
         for part in self._parts:
             part.fill(wo_init_data_generator)
         return wo_init_data_generator
@@ -495,7 +495,7 @@ class Root(Item):
     def fill(self, wo_init_data_generator):
         """
         :param wo_init_data_generator: Генератор, к которому нужно добавить значения для генерирования, соответствующие self.
-        :type wo_init_data_generator: rissile.wo.data_generator.WorldObjectTestInitDataGenerator
+        :type wo_init_data_generator: rissile.wo.data_generator.ParamsGenerator
         """
         wo_init_data_generator.set_value(self.generator())
         
@@ -504,19 +504,23 @@ class RootRepeater(Item):
     
     def __init__(self, name, owner=None):
         Item.__init__(self, name, owner)
-        self._repeater = ValueUnsignedIntDelegate('repeater', 'repeater', self)
-        self._root = Root('model', self)    
-        
+        self._repeater = ValueUnsignedIntDelegate('number of params', QtCore.QCoreApplication.translate('rio_params_item', 'Number of params'), self)
+        self._root = Root(name, self)            
        
     def restore_from_params(self, params):
-        self._root.restore_from_params(params)
+        self._root.restore_from_params(params)        
         
+    def set_value(self, value):
+        self._repeater.set_value(value)    
+        
+    def value(self):
+        return self._repeater.value()    
         
     def generator(self):
-        from rissile.wo.data_generator import WorldObjectTestInitDataGenerator
-        from rissile.wo.data_generator import ValueRangeGenerator
-        wo_init_data_generator = WorldObjectTestInitDataGenerator(self._name)
-        value_range_generator = ValueRangeGenerator('range_generator', {'begin': 0, 'right_border': self._repeater.value() , 'step': 1})
+        from rio.params.data_generator import ParamsGenerator
+        from rio.params.data_generator import ValueRangeGenerator
+        wo_init_data_generator = ParamsGenerator(self._name)
+        value_range_generator = ValueRangeGenerator('index', {'begin': 0, 'right_border': self._repeater.value() , 'step': 1})
         wo_init_data_generator.set_value(value_range_generator)
         wo_init_data_generator.set_value(self._root.generator())
         return wo_init_data_generator

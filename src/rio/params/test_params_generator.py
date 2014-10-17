@@ -6,14 +6,13 @@ __date__ ="$03.07.2014 16:30:50$"
 
 
 import unittest
-from rissile.wo.data_generator import WorldObjectTestInitDataGenerator, ValueConstGenerator, ValueRangeGenerator
+from rio.params.data_generator import ParamsGenerator, ValueConstGenerator, ValueRangeGenerator
 
 
 class GeneratorTester(unittest.TestCase):
     def test_generator(self):
         for value, right_value  in zip(self._create_generator(), self._right_data()):
             self.assertEquals(value, right_value)
-
 
 
     def _create_generator(self):
@@ -27,14 +26,14 @@ class GeneratorTester(unittest.TestCase):
 class TestDataGenerator(GeneratorTester):
     def _create_generator(self):
         def create_generator_of_value():
-            gen = WorldObjectTestInitDataGenerator('value generator')
+            gen = ParamsGenerator('value generator')
             gen.set_value(ValueRangeGenerator('X', {'begin': 0, 'right_border': 1, 'step': 1}))
             gen.set_value(ValueRangeGenerator('H', {'begin': 0, 'right_border': 10, 'step': 2}))
             return gen
 
 
         def create_generator_of_wo_init_data():
-            gen = WorldObjectTestInitDataGenerator('wo generator')
+            gen = ParamsGenerator('wo generator')
             gen.set_value(ValueConstGenerator('V', {'value': 0}))
             gen.set_value(ValueConstGenerator('m', {'value': 2}))
             gen.set_value(create_generator_of_value())

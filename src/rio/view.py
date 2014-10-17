@@ -7,13 +7,12 @@ __date__ ="$23.06.2014 9:14:49$"
 
 from PyQt4 import QtCore, QtGui, uic
 from rio.params import view as params_view
-from model_executor import RissileModelExecutor
 
 class View(QtGui.QMainWindow):
     """
     Класс описывает главный интерфейс взаимодействия пользователя с доступными моделями.
     """
-    def __init__(self, rissile_models, parent=None):
+    def __init__(self, parent=None):
         """
         :param rissile_models: набор доступных моделей.
         :type rissile_models: {'ключ группы модели': ('имя группы модели': (('имя модели', функция производящая модель), ...), ...), ...}
@@ -40,13 +39,8 @@ class View(QtGui.QMainWindow):
             view = params_view.View(self)
             self.ui.values_setter.setWidget(view)
             self._values_setter_view = view
+            self._values_setter_view.model().restore_from_params({'car': 10, 'mass': 20})
  
-        def create_rissile_models_menu():
-            rissile_models.fill_menu(self.ui.menu_models, self._create_new_project)
-            
-        def create_executor():
-            self._rissile_model_executor = RissileModelExecutor(self.ui.text_shower)
-            
         def create_connections():
             self.ui.action_exit.triggered.connect(self.close)
             
@@ -56,18 +50,8 @@ class View(QtGui.QMainWindow):
         append_properties()
         create_view()
         create_connections()
-        create_rissile_models_menu()
-        create_executor()
         restore_state()
 
-
-    def _create_new_project(self, action):
-        self._model = action.data().toPyObject()()
-        self._values_setter_view.model().restore_from_params(self._model.origin_state())
-        self.setWindowTitle(QtCore.QObject().tr('Model is') + action.text())
-        self._rissile_model_executor.set_model_creator(self._model)
-        self._rissile_model_executor.set_generator(self._values_setter_view.model().generator())
-    
 
     def closeEvent(self, event):
         def save_state():

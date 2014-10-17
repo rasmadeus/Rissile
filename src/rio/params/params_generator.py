@@ -136,11 +136,11 @@ class ValueRandomGenerator(ValueGenerator):
         return self.left() + random.random() * self.interval()
 
 
-class WorldObjectTestInitDataGenerator(Generator):
+class ParamsGenerator(Generator):
     """
     Класс генерирует наборы значений вида {'id': value, ...}.
 
-    >>> data = WorldObjectTestInitDataGenerator('data')
+    >>> data = ParamsGenerator('data')
     >>> data.set_value(ValueConstGenerator('X', {'value': 1}))
     >>> data.set_value(ValueRangeGenerator('Y', {'begin': 0, 'right_border': 2, 'step': 1}))
     >>> for init_data in data: print(init_data)
@@ -158,7 +158,7 @@ class WorldObjectTestInitDataGenerator(Generator):
         Добавляет значение для генерирования.
 
         :param value: свойство, значение которого необходимо генерировать.
-        :type value: ValueGenerator или WorldObjectTestInitDataGenerator
+        :type value: ValueGenerator или ParamsGenerator
         """
         self._values.append(value)
 

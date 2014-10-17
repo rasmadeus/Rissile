@@ -5,14 +5,14 @@ __author__="K. Kulikov"
 __date__ ="$08.07.2014 8:22:30$"
 
 
+
 from rio.params.item import ValueForGenerator
-from rio.params.item import Root
-from rissile.wo.data_generator import WorldObjectTestInitDataGenerator
-from rissile.wo.test_data_generator import GeneratorTester
+from rio.params.test_data_generator import GeneratorTester
 
 
 class TestValueGenerator(GeneratorTester):
     def _create_generator(self):
+        from rio.params.data_generator import ParamsGenerator
         def create_range_value():
             value = ValueForGenerator('value', 'range generator', None)
             begin = value.part(0)
@@ -24,7 +24,7 @@ class TestValueGenerator(GeneratorTester):
             return value
 
 
-        generator = WorldObjectTestInitDataGenerator('wo generator')
+        generator = ParamsGenerator('wo generator')
         create_range_value().fill(generator)
         return generator
 
@@ -39,6 +39,7 @@ class TestValueGenerator(GeneratorTester):
 
 class TestRootGenerator(GeneratorTester):
     def _create_generator(self):
+        from rio.params.item import Root
         terra = Root('terra', None)
         ValueForGenerator('aircraft', 'const generator', terra)
         missile = Root('missile', terra)
@@ -58,3 +59,18 @@ class TestRootGenerator(GeneratorTester):
             {'aircraft': 0.0, 'missile':{'engine': 1.0, 'fighting part': 0.0}},
             {'aircraft': 0.0, 'missile':{'engine': 1.0, 'fighting part': 1.0}},
         )
+        
+        
+class TestRootRepeater(GeneratorTester):
+    _number_of_params = 5
+    _params = {'mass': 10, 'velocity': 20}
+    
+    def _create_generator(self):
+        from rio.params.item import RootRepeater
+        root_repeater = RootRepeater('root_repeater')
+        root_repeater.set_value(self._number_of_params)
+        root_repeater.restore_from_params(self._params)
+        return root_repeater.generator()
+    
+    def _right_data(self):
+        return ({'index': i, 'params': self._params} for i in range(self._number_of_params))

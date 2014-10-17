@@ -6,13 +6,13 @@ __date__ ="$25.06.2014 8:30:39$"
 
 
 from PyQt4 import QtCore
-from rio.params.item import RootRepeater, Root
 
 
 class Model(QtCore.QAbstractItemModel):
     def __init__(self, parent=None):
+        from rio.params.item import RootRepeater
         QtCore.QAbstractItemModel.__init__(self, parent)
-        self._root = RootRepeater('root', None)
+        self._root = RootRepeater(QtCore.QCoreApplication.translate('rio_params_model', 'Model\'s params'), None)
 
 
     def restore_from_params(self, params):
