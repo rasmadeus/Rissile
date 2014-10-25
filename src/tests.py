@@ -7,10 +7,10 @@ def start_doc_strings_testing():
     """
     Docs string testing.
     """
-    from auxiliary import imp_py
+    from auxiliary import imp
     import doctest
     
-    for module in imp_py.get_imported_py_modules('.', ('test')):
+    for module in imp.get_all_imported_modules('.'):
         print(doctest.testmod(module))
 
 def start_unittesting():

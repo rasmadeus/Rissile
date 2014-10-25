@@ -5,67 +5,81 @@ __author__="K. Kulikov"
 __date__ ="$23.06.2014 9:14:49$"
 
 
-from PyQt4 import QtCore, QtGui, uic
-from rio.params import view as params_view
-
+from PyQt4 import QtGui
 class View(QtGui.QMainWindow):
     """
     Класс описывает главный интерфейс взаимодействия пользователя с доступными моделями.
     """
     def __init__(self, parent=None):
         """
-        :param rissile_models: набор доступных моделей.
-        :type rissile_models: {'ключ группы модели': ('имя группы модели': (('имя модели', функция производящая модель), ...), ...), ...}
-        """
-        def create_settings_paths():
-            self._geometry_path = '/view/geometry'
-            self._state_path = '/view/state'     
-            self._values_setter_path = 'view/setting_setter_visibility'
-            self._online_logger_path = 'view/online_logger_visibility'
-
-        def append_properties():
-            form, base = uic.loadUiType("view.ui")
-            self.ui = form()
-            self.ui.setupUi(self)
-
-        def restore_state():
-            settings = self._settings()
-            self.restoreGeometry(settings.value(self._geometry_path).toByteArray())
-            self.restoreState(settings.value(self._state_path).toByteArray())
-            self.ui.action_show_values_setter.setChecked(settings.value(self._values_setter_path).toBool())
-            self.ui.action_show_online_logger.setChecked(settings.value(self._online_logger_path).toBool())
-
-        def create_view():
-            view = params_view.View(self)
-            self.ui.values_setter.setWidget(view)
-            self._values_setter_view = view
-            self._values_setter_view.model().restore_from_params({'car': 10, 'mass': 20})
- 
-        def create_connections():
-            self.ui.action_exit.triggered.connect(self.close)
-            
-            
+        """       
         QtGui.QMainWindow.__init__(self, parent)
-        create_settings_paths()
-        append_properties()
-        create_view()
-        create_connections()
-        restore_state()
-
+        self._load_ui()
+        self._create_params_view()
+        self._bind_actions()
+        self._create_plugins()
+        self._create_look_and_feel_settings()       
 
     def closeEvent(self, event):
-        def save_state():
-            settings = self._settings()
-            settings.setValue(self._geometry_path, self.saveGeometry())
-            settings.setValue(self._state_path, self.saveState())
-            settings.setValue(self._values_setter_path, self.ui.values_setter.isVisible())
-            settings.setValue(self._online_logger_path, self.ui.online_logger.isVisible())
-        save_state()
-        return QtGui.QMainWindow.closeEvent(self, event)
-
-
-    def _settings(self):
-        """
-        :return: инициализированный экземпляр QSettings для записи настроек self.
-        """
-        return QtCore.QSettings('rio_settings.ini', QtCore.QSettings.IniFormat)  
+        self._settings.save()
+        return QtGui.QMainWindow.closeEvent(self, event)    
+    
+    def _load_ui(self):
+        from PyQt4 import uic
+        path_to_ui = 'view.ui'
+        self._ui = uic.loadUiType(path_to_ui)[0]()
+        self._ui.setupUi(self)
+        
+    def _create_params_view(self):
+        from rio.params import view as params_view
+        self._params_view = params_view.View(self)
+        self._ui.values_setter.setWidget(self._params_view)
+        self._params_view.model().restore_from_params({'car': 10, 'mass': 20})
+    
+    def _bind_actions(self):
+        self._ui.exit.triggered.connect(self.close)
+    
+    def _create_plugins(self):       
+        from rio.plugins.plugins import Plugins
+        self._plugins = Plugins()
+        self._ui.action_set_dir_search.triggered.connect(self._set_plugins_dir_search_with_user)
+        self._update_plugins_menu()
+    
+    def _set_plugins_dir_search_with_user(self):
+        self._plugins.set_dir_search_with_user(self)
+        self._update_plugins_menu()
+    
+    def _update_plugins_menu(self):
+        self._plugins.find_availaible()
+        
+    def _create_look_and_feel_settings(self):
+        from rio.settings import settings
+        self._settings = settings.Settings(
+            (
+                (
+                    'view/geometry', 
+                    self.saveGeometry,
+                    self.restoreGeometry,
+                   'byte_array'
+                ),
+                (
+                    'view/state', 
+                    self.saveState,  
+                    self.restoreState, 
+                    'byte_array'
+                ),
+                (
+                    'view/setting_setter_visibility', 
+                    self._ui.values_setter.isVisible, 
+                    self._ui.show_values_setter.setChecked,
+                    'bool'
+                ),
+                (
+                    'view/online_logger_visibility', 
+                    self._ui.online_logger.isVisible, 
+                    self._ui.show_online_logger.setChecked, 
+                    'bool'
+                )        
+            )
+        )
+        self._settings.read()

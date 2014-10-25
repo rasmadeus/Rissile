@@ -73,4 +73,4 @@ class TestRootRepeater(GeneratorTester):
         return root_repeater.generator()
     
     def _right_data(self):
-        return ({'index': i, 'params': self._params} for i in range(self._number_of_params))
+        return ({'index': i, 'root_repeater': self._params} for i in range(self._number_of_params))

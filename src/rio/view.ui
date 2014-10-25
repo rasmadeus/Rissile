@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>603</width>
-    <height>547</height>
+    <width>687</width>
+    <height>424</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,72 +17,7 @@
    <iconset resource="res.qrc">
     <normaloff>:/first_face/res/main_icon.png</normaloff>:/first_face/res/main_icon.png</iconset>
   </property>
-  <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout"/>
-  </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>603</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="project_menu">
-    <property name="toolTip">
-     <string>The project's menu.</string>
-    </property>
-    <property name="statusTip">
-     <string>The project's menu.</string>
-    </property>
-    <property name="title">
-     <string>Project</string>
-    </property>
-    <widget class="QMenu" name="menu_models">
-     <property name="toolTip">
-      <string>Choose a model's type for creating a new project.</string>
-     </property>
-     <property name="statusTip">
-      <string>Choose a model's type for creating a new project.</string>
-     </property>
-     <property name="title">
-      <string>New model</string>
-     </property>
-    </widget>
-    <addaction name="menu_models"/>
-    <addaction name="separator"/>
-    <addaction name="save"/>
-    <addaction name="save_as"/>
-    <addaction name="load"/>
-    <addaction name="separator"/>
-    <addaction name="action_exit"/>
-   </widget>
-   <widget class="QMenu" name="help_menu">
-    <property name="toolTip">
-     <string>The help's menu.</string>
-    </property>
-    <property name="statusTip">
-     <string>The help's menu.</string>
-    </property>
-    <property name="title">
-     <string>Help</string>
-    </property>
-    <addaction name="about"/>
-    <addaction name="license"/>
-    <addaction name="guide"/>
-   </widget>
-   <widget class="QMenu" name="menuView">
-    <property name="title">
-     <string>View</string>
-    </property>
-    <addaction name="action_show_values_setter"/>
-    <addaction name="action_show_online_logger"/>
-   </widget>
-   <addaction name="project_menu"/>
-   <addaction name="menuView"/>
-   <addaction name="help_menu"/>
-  </widget>
+  <widget class="QWidget" name="centralwidget"/>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">
    <property name="windowTitle">
@@ -99,36 +34,6 @@
    <addaction name="run"/>
    <addaction name="stop"/>
   </widget>
-  <widget class="QDockWidget" name="values_setter">
-   <property name="toolTip">
-    <string>Values' setter.</string>
-   </property>
-   <property name="statusTip">
-    <string>Values' setter.</string>
-   </property>
-   <property name="whatsThis">
-    <string>Values' setter.</string>
-   </property>
-   <property name="locale">
-    <locale language="English" country="UnitedStates"/>
-   </property>
-   <property name="windowTitle">
-    <string>Values' setter</string>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>1</number>
-   </attribute>
-   <widget class="QWidget" name="dockWidgetContents">
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <property name="spacing">
-      <number>2</number>
-     </property>
-     <property name="margin">
-      <number>2</number>
-     </property>
-    </layout>
-   </widget>
-  </widget>
   <widget class="QDockWidget" name="online_logger">
    <property name="toolTip">
     <string>Online logger.</string>
@@ -139,14 +44,20 @@
    <property name="whatsThis">
     <string>Online logger.</string>
    </property>
+   <property name="floating">
+    <bool>false</bool>
+   </property>
+   <property name="features">
+    <set>QDockWidget::AllDockWidgetFeatures</set>
+   </property>
    <property name="windowTitle">
     <string>Online logger.</string>
    </property>
    <attribute name="dockWidgetArea">
-    <number>4</number>
+    <number>8</number>
    </attribute>
    <widget class="QWidget" name="dockWidgetContents_2">
-    <layout class="QVBoxLayout" name="verticalLayout_2">
+    <layout class="QHBoxLayout" name="horizontalLayout">
      <property name="spacing">
       <number>2</number>
      </property>
@@ -168,6 +79,94 @@
      </item>
     </layout>
    </widget>
+  </widget>
+  <widget class="QDockWidget" name="values_setter">
+   <property name="toolTip">
+    <string>Values' setter.</string>
+   </property>
+   <property name="statusTip">
+    <string>Values' setter.</string>
+   </property>
+   <property name="whatsThis">
+    <string>Values' setter.</string>
+   </property>
+   <property name="locale">
+    <locale language="English" country="UnitedStates"/>
+   </property>
+   <property name="floating">
+    <bool>false</bool>
+   </property>
+   <property name="windowTitle">
+    <string>Values' setter</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>4</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents"/>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>687</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="project_menu">
+    <property name="toolTip">
+     <string>The project's menu.</string>
+    </property>
+    <property name="statusTip">
+     <string>The project's menu.</string>
+    </property>
+    <property name="title">
+     <string>Project</string>
+    </property>
+    <addaction name="save"/>
+    <addaction name="save_as"/>
+    <addaction name="load"/>
+    <addaction name="separator"/>
+    <addaction name="exit"/>
+   </widget>
+   <widget class="QMenu" name="help_menu">
+    <property name="toolTip">
+     <string>The help's menu.</string>
+    </property>
+    <property name="statusTip">
+     <string>The help's menu.</string>
+    </property>
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="about"/>
+    <addaction name="license"/>
+    <addaction name="guide"/>
+   </widget>
+   <widget class="QMenu" name="menu_view">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <addaction name="show_values_setter"/>
+    <addaction name="show_online_logger"/>
+   </widget>
+   <widget class="QMenu" name="menu_plugins">
+    <property name="title">
+     <string>Plugins</string>
+    </property>
+    <widget class="QMenu" name="menu_open_plugin">
+     <property name="title">
+      <string>Open</string>
+     </property>
+    </widget>
+    <addaction name="action_set_dir_search"/>
+    <addaction name="separator"/>
+    <addaction name="menu_open_plugin"/>
+   </widget>
+   <addaction name="project_menu"/>
+   <addaction name="menu_view"/>
+   <addaction name="menu_plugins"/>
+   <addaction name="help_menu"/>
   </widget>
   <action name="save">
    <property name="icon">
@@ -245,8 +244,8 @@
   </action>
   <action name="run">
    <property name="icon">
-    <iconset resource="res.qrc">
-     <normaloff>:/first_face/res/run.png</normaloff>:/first_face/res/run.png</iconset>
+    <iconset>
+     <normaloff>res/run.png</normaloff>res/run.png</iconset>
    </property>
    <property name="text">
     <string>Run</string>
@@ -258,7 +257,7 @@
     <string>Make the project running.</string>
    </property>
   </action>
-  <action name="action_exit">
+  <action name="exit">
    <property name="text">
     <string>Exit</string>
    </property>
@@ -269,7 +268,7 @@
     <string>Close this program.</string>
    </property>
   </action>
-  <action name="action_show_values_setter">
+  <action name="show_values_setter">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -289,7 +288,7 @@
     <string>Show values' setter.</string>
    </property>
   </action>
-  <action name="action_show_online_logger">
+  <action name="show_online_logger">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -302,8 +301,8 @@
   </action>
   <action name="stop">
    <property name="icon">
-    <iconset resource="res.qrc">
-     <normaloff>:/first_face/res/stop.png</normaloff>:/first_face/res/stop.png</iconset>
+    <iconset>
+     <normaloff>res/stop.png</normaloff>res/stop.png</iconset>
    </property>
    <property name="text">
     <string>stop</string>
@@ -312,13 +311,24 @@
     <string>Stop calculating.</string>
    </property>
   </action>
+  <action name="action_set_dir_search">
+   <property name="text">
+    <string>Set dir search</string>
+   </property>
+   <property name="toolTip">
+    <string>Set initial for for searching any availaible model. </string>
+   </property>
+   <property name="statusTip">
+    <string>Set initial for for searching any availaible model. </string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="res.qrc"/>
  </resources>
  <connections>
   <connection>
-   <sender>action_show_values_setter</sender>
+   <sender>show_values_setter</sender>
    <signal>triggered(bool)</signal>
    <receiver>values_setter</receiver>
    <slot>setVisible(bool)</slot>
@@ -336,7 +346,7 @@
   <connection>
    <sender>values_setter</sender>
    <signal>visibilityChanged(bool)</signal>
-   <receiver>action_show_values_setter</receiver>
+   <receiver>show_values_setter</receiver>
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -350,7 +360,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>action_show_online_logger</sender>
+   <sender>show_online_logger</sender>
    <signal>triggered(bool)</signal>
    <receiver>online_logger</receiver>
    <slot>setVisible(bool)</slot>
@@ -368,7 +378,7 @@
   <connection>
    <sender>online_logger</sender>
    <signal>visibilityChanged(bool)</signal>
-   <receiver>action_show_online_logger</receiver>
+   <receiver>show_online_logger</receiver>
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">

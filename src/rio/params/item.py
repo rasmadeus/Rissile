@@ -221,6 +221,7 @@ class ValueFloatEditable(ValueEditable):
 
             def createEditor(self, parent, option, index):
                 editor = QtGui.QDoubleSpinBox(parent)
+                editor.setDecimals(10)
                 editor.setMinimum(-1000000.0)
                 editor.setMaximum(1000000.0)
                 return editor
@@ -235,7 +236,13 @@ class ValueFloatEditable(ValueEditable):
 
         return Delegate(parent)
     
-class ValueUnsignedIntDelegate(ValueEditable):
+class ValueRepeater(ValueEditable):
+    def _font_role(self, column):
+        font = ValueEditable._font_role(self, column)
+        if column == 0:
+            font.setBold(True)
+        return font
+    
     def delegate(self, parent=None):
         class Delegate(QtGui.QItemDelegate):
             def __init__(self, parent=parent):
@@ -291,12 +298,12 @@ class ValueForGenerator(Value):
 
         class DataForConstGenerator(Data):
             def name(self):
-                return QtCore.QCoreApplication.translate('rio_params_item', 'const value')
+                return QtCore.QCoreApplication.translate('rio', 'const value')
 
 
             def _create_parts(self, owner):
                 return (
-                    ValueFloatEditable('value', QtCore.QCoreApplication.translate('rio_params_item', 'value'), owner),
+                    ValueFloatEditable('value', QtCore.QCoreApplication.translate('rio', 'value'), owner),
                 )
 
 
@@ -307,14 +314,14 @@ class ValueForGenerator(Value):
 
         class DataForRangeGenerator(Data):
             def name(self):
-                return QtCore.QCoreApplication.translate('rio_params_item', 'interval')
+                return QtCore.QCoreApplication.translate('rio', 'interval')
 
 
             def _create_parts(self, owner):
                 return (
-                    ValueFloatEditable('begin', QtCore.QCoreApplication.translate('rio_params_item', 'start value'), owner),
-                    ValueFloatEditable('right_border', QtCore.QCoreApplication.translate('rio_params_item', 'right border'), owner), 
-                    ValueFloatEditable('step', QtCore.QCoreApplication.translate('rio_params_item', 'step'), owner)
+                    ValueFloatEditable('begin', QtCore.QCoreApplication.translate('rio', 'start value'), owner),
+                    ValueFloatEditable('right_border', QtCore.QCoreApplication.translate('rio', 'right border'), owner), 
+                    ValueFloatEditable('step', QtCore.QCoreApplication.translate('rio', 'step'), owner)
                 )
 
 
@@ -325,13 +332,13 @@ class ValueForGenerator(Value):
 
         class DataForRandomGenerator(Data):
             def name(self):
-                return QtCore.QCoreApplication.translate('rio_params_item', 'random value')
+                return QtCore.QCoreApplication.translate('rio', 'random value')
 
 
             def _create_parts(self, owner):
                 return (
-                    ValueFloatEditable('left_border', QtCore.QCoreApplication.translate('rio_params_item', 'left border'), owner),
-                    ValueFloatEditable('right_border', QtCore.QCoreApplication.translate('rio_params_item', 'right border'), owner)
+                    ValueFloatEditable('left_border', QtCore.QCoreApplication.translate('rio', 'left border'), owner),
+                    ValueFloatEditable('right_border', QtCore.QCoreApplication.translate('rio', 'right border'), owner)
                 )
 
 
@@ -441,11 +448,10 @@ class Root(Item):
         :return: жирный шрифт, установленный по умолчанию.
         :rtype: QFont()
         """
-        font = QtGui.QFont()
+        font = Item._font_role(self, column)
         font.setBold(True)
         return font
-
-
+    
     def _flags_for_value(self):
         """
         :return: флаг, запрещающий редактирование контейнера.
@@ -504,7 +510,7 @@ class RootRepeater(Item):
     
     def __init__(self, name, owner=None):
         Item.__init__(self, name, owner)
-        self._repeater = ValueUnsignedIntDelegate('number of params', QtCore.QCoreApplication.translate('rio_params_item', 'Number of params'), self)
+        self._repeater = ValueRepeater('number of params', QtCore.QCoreApplication.translate('rio', 'Number of params'), self)
         self._root = Root(name, self)            
        
     def restore_from_params(self, params):
