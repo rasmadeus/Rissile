@@ -6,4 +6,5 @@ __author__="K. Kulikov"
 __date__ ="$25.10.2014 19:25:52$"
 
 
-PLUGIN_NAME = u'test plugin'
+NAME = u'Shop'
+SHORT_DESCRIPTION = u'This is imitation a simple shop\'s activity'

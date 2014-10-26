@@ -5,4 +5,4 @@
 __author__="K.Kulikov"
 __date__ ="$25.10.2014 19:35:06$"
 
-PLUGINS_GROUP_NAME = u'Test models'
+NAME = u'Test models'

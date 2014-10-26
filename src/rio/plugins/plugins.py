@@ -22,7 +22,7 @@ class Plugins:
         )
         self._settings.read()     
     
-    def find_availaible(self):    
+    def find(self):    
         from auxiliary import imp
         self._plugins_groups = {}
         for plugins_group_name, plugins_group_path in imp.get_dirs_names_and_absolute_paths(self._dir_search):
@@ -69,8 +69,10 @@ class Plugins:
                 imported_plugin_module = imp.get_imported_module(plugin_module_name)
                 if imported_plugin_module is not None:
                     try:
-                        plugin_name = imported_plugin_module.PLUGIN_NAME
+                        plugin_name = imported_plugin_module.NAME
                         action = sub_menu.addAction(plugin_name)
+                        plugin_short_description = imported_plugin_module.SHORT_DESCRIPTION
+                        action.setStatusTip(plugin_short_description)
                         action.setData(plugin_name)
                     except:
                         pass
@@ -79,12 +81,13 @@ class Plugins:
             imported_plugins_group_module = imp.get_imported_module(plugins_group_module)
             if imported_plugins_group_module is not None:
                 try:
-                    plugins_group_name = imported_plugins_group_module.PLUGINS_GROUP_NAME
-                    fill_sub_menu_by(menu.addMenu(plugins_group_name), plugins_maybe)
+                    plugins_group_name = imported_plugins_group_module.NAME
+                    sub_menu = menu.addMenu(plugins_group_name)
+                    fill_sub_menu_by(sub_menu, plugins_maybe)
                 except:
                     pass
 
         menu.clear()
         for plugins_group_module, plugins_maybe in self._plugins_groups.iteritems():
-           create_sub_menu(plugins_group_module, plugins_maybe, menu)
+            create_sub_menu(plugins_group_module, plugins_maybe, menu)
             

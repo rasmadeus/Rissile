@@ -50,14 +50,14 @@ class View(QtGui.QMainWindow):
         self._update_plugins_menu()
     
     def _update_plugins_menu(self):
-        self._plugins.find_availaible()
+        self._plugins.find()
         self._plugins.fill_menu(self._ui.menu_open_plugin)
         
     def _create_look_and_feel_settings(self):
         from rio.settings import settings
         self._settings = settings.Settings(
             (
-                (
+                ( 
                     'view/geometry', 
                     self.saveGeometry,
                     self.restoreGeometry,
