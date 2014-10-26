@@ -22,15 +22,20 @@ class Plugins:
         )
         self._settings.read()     
     
-    def find_availaible(self):
+    def find_availaible(self):    
         from auxiliary import imp
         self._plugins_groups = {}
-        for plugins_group_name, plugins_group_path in imp.get_dirs_names_and_absolute_paths(str(self._dir_search)):
-            pass
-   
+        for plugins_group_name, plugins_group_path in imp.get_dirs_names_and_absolute_paths(self._dir_search):
+            availaible_dirs_and_paths = imp.get_dirs_names_and_absolute_paths(plugins_group_path)
+            plugins_group_module = plugins_group_name + '.info'
+            self._plugins_groups[plugins_group_module] = []
+            for plugin_name, plugin_path in availaible_dirs_and_paths:
+                plugin_module_path = plugins_group_name + '.' + plugin_name + '.plugin'
+                self._plugins_groups[plugins_group_module].append(plugin_module_path)
+                
     def set_dir_search(self, dir_search):
         self.remove_dir_search_from_sys_path()
-        self._dir_search = dir_search
+        self._dir_search = str(dir_search)
         self.append_dir_search_to_sys_path()
    
     def set_dir_search_with_user(self, dialog_parent):
@@ -44,7 +49,7 @@ class Plugins:
         
     def append_dir_search_to_sys_path(self):
         import sys
-        sys.path.append(str(self._dir_search))
+        sys.path.append(self._dir_search)
         
     def remove_dir_search_from_sys_path(self):
         import sys
@@ -55,3 +60,31 @@ class Plugins:
         
     def get_dir_search(self):
         return self._dir_search
+    
+    def fill_menu(self, menu):
+        from auxiliary import imp
+        
+        def fill_sub_menu_by(sub_menu, plugins_maybe):
+            for plugin_module_name in plugins_maybe:
+                imported_plugin_module = imp.get_imported_module(plugin_module_name)
+                if imported_plugin_module is not None:
+                    try:
+                        plugin_name = imported_plugin_module.PLUGIN_NAME
+                        action = sub_menu.addAction(plugin_name)
+                        action.setData(plugin_name)
+                    except:
+                        pass
+        
+        def create_sub_menu(plugins_group_module, plugins_maybe, menu):
+            imported_plugins_group_module = imp.get_imported_module(plugins_group_module)
+            if imported_plugins_group_module is not None:
+                try:
+                    plugins_group_name = imported_plugins_group_module.PLUGINS_GROUP_NAME
+                    fill_sub_menu_by(menu.addMenu(plugins_group_name), plugins_maybe)
+                except:
+                    pass
+
+        menu.clear()
+        for plugins_group_module, plugins_maybe in self._plugins_groups.iteritems():
+           create_sub_menu(plugins_group_module, plugins_maybe, menu)
+            

@@ -9,14 +9,21 @@ def create_path_to_module(current_dir_path, file_name):
     path_to_module = '.'.join([current_dir_path, file_name.split('.')[0]])
     return  path_to_module[2:].replace('\\','.')
 
-def import_module(path_to_module, modules):
+
+def get_imported_module(path_to_module):
     import importlib
     try:
         module = importlib.import_module(path_to_module)
-        modules.append(module)
+        return module
     except:
-        pass
+        return None
 
+def import_module(path_to_module, modules):
+    imported_module = get_imported_module(path_to_module)
+    if importd_module is not None:
+        modules.append(imported_module)
+
+    
 def get_all_imported_modules(start_path, pattern='\S+\.py'):
     def is_file_desired(file_name, pattern):
         import re

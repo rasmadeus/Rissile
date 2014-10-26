@@ -4,3 +4,5 @@
 
 __author__="K. Kulikov"
 __date__ ="$25.10.2014 19:26:18$"
+
+PLUGIN_NAME = u'test plugin'

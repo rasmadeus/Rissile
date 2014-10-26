@@ -51,6 +51,7 @@ class View(QtGui.QMainWindow):
     
     def _update_plugins_menu(self):
         self._plugins.find_availaible()
+        self._plugins.fill_menu(self._ui.menu_open_plugin)
         
     def _create_look_and_feel_settings(self):
         from rio.settings import settings
