@@ -10,18 +10,13 @@ def create_path_to_module(current_dir_path, file_name):
     return  path_to_module[2:].replace('\\','.')
 
 
-def get_imported_module(path_to_module):
+def import_module(path_to_module, modules):
     import importlib
     try:
         module = importlib.import_module(path_to_module)
-        return module
+        modules.append(module)
     except:
-        return None
-
-def import_module(path_to_module, modules):
-    imported_module = get_imported_module(path_to_module)
-    if importd_module is not None:
-        modules.append(imported_module)
+        pass
 
     
 def get_all_imported_modules(start_path, pattern='\S+\.py'):

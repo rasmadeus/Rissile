@@ -5,6 +5,21 @@
 __author__="K. Kulikov"
 __date__ ="$18.10.2014 22:38:11$"
 
+class Plugin:
+    def get_default_state(self):
+        pass
+    
+    def set_initial_state(self, params):
+        pass
+    
+    def run(self):
+        pass
+    
+    def call(self, out_agent):
+        pass   
+
+
+
 class Plugins:
     """    
     """
@@ -62,30 +77,39 @@ class Plugins:
         return self._dir_search
     
     def fill_menu(self, menu):
-        from auxiliary import imp
+        import importlib
         
         def fill_sub_menu_by(sub_menu, plugins_maybe):
             for plugin_module_name in plugins_maybe:
-                imported_plugin_module = imp.get_imported_module(plugin_module_name)
-                if imported_plugin_module is not None:
-                    try:
-                        plugin_name = imported_plugin_module.NAME
-                        action = sub_menu.addAction(plugin_name)
-                        plugin_short_description = imported_plugin_module.SHORT_DESCRIPTION
-                        action.setStatusTip(plugin_short_description)
-                        action.setData(plugin_name)
-                    except:
-                        pass
-        
-        def create_sub_menu(plugins_group_module, plugins_maybe, menu):
-            imported_plugins_group_module = imp.get_imported_module(plugins_group_module)
-            if imported_plugins_group_module is not None:
                 try:
-                    plugins_group_name = imported_plugins_group_module.NAME
-                    sub_menu = menu.addMenu(plugins_group_name)
-                    fill_sub_menu_by(sub_menu, plugins_maybe)
+                    imported_plugin_module = importlib.import_module(plugin_module_name)
+                    plugin_name = imported_plugin_module.NAME
+                    action = sub_menu.addAction(plugin_name)
+                    plugin_short_description = imported_plugin_module.SHORT_DESCRIPTION
+                    action.setStatusTip(plugin_short_description)
+                    action.setData(plugin_name)
                 except:
                     pass
+        
+        def create_sub_menu(plugins_group_module, plugins_maybe, menu): 
+            from PyQt4 import QtCore
+            try:
+                imported_plugins_group_module = importlib.import_module(plugins_group_module)
+                plugins_group_name = imported_plugins_group_module.NAME
+                sub_menu = menu.addMenu(plugins_group_name)
+                fill_sub_menu_by(sub_menu, plugins_maybe)
+            except ImportError:
+                comment = QtCore.QCoreApplication.translate(
+                    'rio', 
+                    QtCore.QString('It\'s impossible to import %1').arg(plugins_group_module)
+                )                
+                self._logger.append(comment)
+            except AttributeError:
+                comment = QtCore.QCoreApplication.translate(
+                    'rio', 
+                    QtCore.QString('%1 must have the NAME attribute!').arg(plugins_group_module)
+                )                
+                self._logger.append(comment)
 
         menu.clear()
         for plugins_group_module, plugins_maybe in self._plugins_groups.iteritems():

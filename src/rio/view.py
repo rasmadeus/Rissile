@@ -42,6 +42,7 @@ class View(QtGui.QMainWindow):
     def _create_plugins(self):       
         from rio.plugins.plugins import Plugins
         self._plugins = Plugins()
+        self._plugins._logger = self._ui.logger
         self._ui.action_set_dir_search.triggered.connect(self._set_plugins_dir_search_with_user)
         self._update_plugins_menu()
     

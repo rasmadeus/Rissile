@@ -65,7 +65,7 @@
       <number>2</number>
      </property>
      <item>
-      <widget class="QTextEdit" name="text_shower">
+      <widget class="QTextEdit" name="logger">
        <property name="documentTitle">
         <string/>
        </property>
