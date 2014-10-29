@@ -24,7 +24,7 @@ class Plugins:
     """    
     """
     def __init__(self):
-        from rio.settings import settings
+        from tools import settings
         self._settings = settings.Settings(
             (
                 (
@@ -38,7 +38,7 @@ class Plugins:
         self._settings.read()     
     
     def find(self):    
-        from auxiliary import imp
+        from tools import imp
         self._plugins_groups = {}
         for plugins_group_name, plugins_group_path in imp.get_dirs_names_and_absolute_paths(self._dir_search):
             availaible_dirs_and_paths = imp.get_dirs_names_and_absolute_paths(plugins_group_path)

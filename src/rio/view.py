@@ -18,7 +18,8 @@ class View(QtGui.QMainWindow):
         self._create_params_view()
         self._bind_actions()
         self._create_plugins()
-        self._create_look_and_feel_settings()       
+        self._create_look_and_feel_settings()   
+        self._create_translator()
 
     def closeEvent(self, event):
         self._settings.save()
@@ -40,7 +41,7 @@ class View(QtGui.QMainWindow):
         self._ui.exit.triggered.connect(self.close)
     
     def _create_plugins(self):       
-        from rio.plugins.plugins import Plugins
+        from plugins.plugins import Plugins
         self._plugins = Plugins()
         self._plugins._logger = self._ui.logger
         self._ui.action_set_dir_search.triggered.connect(self._set_plugins_dir_search_with_user)
@@ -55,7 +56,7 @@ class View(QtGui.QMainWindow):
         self._plugins.fill_menu(self._ui.menu_open_plugin)
         
     def _create_look_and_feel_settings(self):
-        from rio.settings import settings
+        from tools import settings
         self._settings = settings.Settings(
             (
                 ( 
@@ -85,3 +86,8 @@ class View(QtGui.QMainWindow):
             )
         )
         self._settings.read()
+        
+        
+    def _create_translator(self):
+        from tr import tr
+        self._tr = tr.Translator(self._ui.menu_languages)

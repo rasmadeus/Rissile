@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>687</width>
-    <height>424</height>
+    <width>694</width>
+    <height>448</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -109,7 +109,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>687</width>
+     <width>694</width>
      <height>21</height>
     </rect>
    </property>
@@ -147,8 +147,20 @@
     <property name="title">
      <string>View</string>
     </property>
+    <widget class="QMenu" name="menu_languages">
+     <property name="toolTip">
+      <string>Choose this application language.</string>
+     </property>
+     <property name="statusTip">
+      <string>Choose this application language.</string>
+     </property>
+     <property name="title">
+      <string>Language</string>
+     </property>
+    </widget>
     <addaction name="show_values_setter"/>
     <addaction name="show_online_logger"/>
+    <addaction name="menu_languages"/>
    </widget>
    <widget class="QMenu" name="menu_plugins">
     <property name="title">
