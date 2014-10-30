@@ -90,4 +90,7 @@ class View(QtGui.QMainWindow):
         
     def _create_translator(self):
         from tr import tr
-        self._tr = tr.Translator(self._ui.menu_languages)
+        self._tr = tr.Translator(self._ui.menu_languages, self._retranslate)
+        
+    def _retranslate(self):
+        self._ui.retranslateUi(self)
