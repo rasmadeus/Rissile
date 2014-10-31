@@ -23,6 +23,7 @@ class View(QtGui.QMainWindow):
 
     def closeEvent(self, event):
         self._settings.save()
+        self._tr.save_active_rio_locale()
         return QtGui.QMainWindow.closeEvent(self, event)    
     
     def _load_ui(self):
@@ -90,7 +91,11 @@ class View(QtGui.QMainWindow):
         
     def _create_translator(self):
         from tr import tr
-        self._tr = tr.Translator(self._ui.menu_languages, self._retranslate)
+        self._tr = tr.Translator()
+        self._tr.add_translator_agent(self._retranslate)
+        self._tr.restore_active_rio_locale()
+        self._tr.fill_with_availaible_translations(self._ui.menu_languages)
+
         
     def _retranslate(self):
         self._ui.retranslateUi(self)
