@@ -7,7 +7,7 @@ def start_doc_strings_testing():
     """
     Docs string testing.
     """
-    from auxiliary import imp
+    from rio.tools import imp
     import doctest
     
     for module in imp.get_all_imported_modules('.'):

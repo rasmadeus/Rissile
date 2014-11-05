@@ -6,10 +6,10 @@ __author__="K. Kulikov"
 __date__ ="$25.10.2014 19:25:52$"
 
 
-NAME = u'Shop'
-SHORT_DESCRIPTION = u'This is imitation a simple shop\'s activity'
+NAME = 'Shop'
+SHORT_DESCRIPTION = 'This is imitation a simple shop\'s activity'
 
 from rio import plugins
 
-class Shop(plugins.plugins.Plugin):
+class Plugin(plugins.plugins.Plugin):
     pass

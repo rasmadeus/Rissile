@@ -12,7 +12,6 @@ from tools import settings
 
 class Translator:
     def __init__(self):
-        self._active_rio_locale = ''
         self._translations_dir = os.path.join(os.getcwd(), 'tr')
         self._translator_agents = []
         self._rio_tr = QtCore.QTranslator()
@@ -28,12 +27,7 @@ class Translator:
                 ),
             )
         )
-        
-    def restore_active_rio_locale(self):
         self._settings.read()
-        
-    def save_active_rio_locale(self):
-        self._settings.save()
         
     def get_active_rio_locale(self):
         return self._active_rio_locale
@@ -74,6 +68,7 @@ class Translator:
     def _change_locale(self, action):
         locales_names = action.data().toPyObject()
         self.load_locale(locales_names)
+        self._settings.save()
       
     def _create_locale_action(self, name, locales, parent):
         action = QtGui.QAction(name, parent)

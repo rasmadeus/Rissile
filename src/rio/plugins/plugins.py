@@ -7,7 +7,7 @@ __date__ ="$18.10.2014 22:38:11$"
 
 class Plugin:
     def get_default_state(self):
-        pass
+        return {}
     
     def set_initial_state(self, params):
         pass
@@ -19,11 +19,65 @@ class Plugin:
         pass   
 
 
-
-class Plugins:
+class _PluginsFinder():
+    
+    def __init__(self, logger):
+        self._logger = logger
+        self._attrs = (('NAME', str),)
+    
+    @staticmethod
+    def get_path_to_plugin(plugins_group_name, plugin_name): 
+        return plugins_group_name + '.' + plugin_name + '.plugin'
+   
+    @staticmethod
+    def get_path_to_group(plugins_group_name):
+        return plugins_group_name + '.info'
+    
+    def find(self, dir_search):
+        from tools import imp
+        self._clear_prev_founded_plugins_group()
+        dirs_and_names = imp.get_dirs_names_and_absolute_paths(dir_search)
+        for plugins_group_name, plugins_group_path in dirs_and_names: 
+            self._add_group(plugins_group_name, plugins_group_path)
+        
+    def get_plugins_groups(self):
+        return self._plugins_groups
+        
+    def _clear_prev_founded_plugins_group(self):
+        self._plugins_groups = {}
+            
+    def _add_group(self, plugins_group_name, plugins_group_path):
+        path_to_group = self.get_path_to_group(plugins_group_name)
+        self._call_if_importable(path_to_group, self._add_valid_group, plugins_group_name, plugins_group_path)
+            
+    def _add_valid_group(self, group, plugins_group_name, plugins_group_path):
+        from tools import imp
+        self._plugins_groups[group.NAME] = []
+        availaible_dirs_and_paths = imp.get_dirs_names_and_absolute_paths(plugins_group_path)
+        for plugin_name, plugin_path in availaible_dirs_and_paths:
+            self._add_plugin(plugins_group_name, plugin_name, group)
+            
+    def _add_plugin(self, plugins_group_name, plugin_name, group):
+        path_to_plugin = self.get_path_to_plugin(plugins_group_name, plugin_name)
+        self._call_if_importable(path_to_plugin, self._plugins_groups[group.NAME].append)
+          
+    def _call_if_importable(self, path_to_module, f, *f_args):
+        from loader import ModuleImporter
+        importer = ModuleImporter(self._logger, self._attrs)
+        importer.load(path_to_module)
+        if(importer.is_imported()):
+            f(importer.get_module(), *f_args)
+            
+    
+from PyQt4 import QtCore
+from PyQt4 import QtGui
+class Plugins(QtCore.QObject):
     """    
     """
+    change_plugin = QtCore.pyqtSignal(QtGui.QAction)
+    
     def __init__(self):
+        QtCore.QObject.__init__(self)
         from tools import settings
         self._settings = settings.Settings(
             (
@@ -36,17 +90,11 @@ class Plugins:
             )
         )
         self._settings.read()     
-    
-    def find(self):    
-        from tools import imp
-        self._plugins_groups = {}
-        for plugins_group_name, plugins_group_path in imp.get_dirs_names_and_absolute_paths(self._dir_search):
-            availaible_dirs_and_paths = imp.get_dirs_names_and_absolute_paths(plugins_group_path)
-            plugins_group_module = plugins_group_name + '.info'
-            self._plugins_groups[plugins_group_module] = []
-            for plugin_name, plugin_path in availaible_dirs_and_paths:
-                plugin_module_path = plugins_group_name + '.' + plugin_name + '.plugin'
-                self._plugins_groups[plugins_group_module].append(plugin_module_path)
+   
+    def find(self): 
+        plugins_finder = _PluginsFinder(self._logger)
+        plugins_finder.find(self._dir_search)  
+        self._plugins_groups = plugins_finder.get_plugins_groups()
                 
     def set_dir_search(self, dir_search):
         self.remove_dir_search_from_sys_path()
@@ -55,8 +103,7 @@ class Plugins:
    
     def set_dir_search_with_user(self, dialog_parent):
         from PyQt4.QtGui import QFileDialog
-        from PyQt4 import QtCore
-        dialog_title = QtCore.QCoreApplication.translate('rio', QtCore.QString('Choose an initial dir'))
+        dialog_title = QtCore.QCoreApplication.translate('rio', 'Choose an initial dir')
         dir = QFileDialog.getExistingDirectory(dialog_parent, dialog_title, self._dir_search)  
         if not dir.isEmpty():
             self.set_dir_search(dir)
@@ -77,41 +124,17 @@ class Plugins:
         return self._dir_search
     
     def fill_menu(self, menu):
-        import importlib
-        
-        def fill_sub_menu_by(sub_menu, plugins_maybe):
-            for plugin_module_name in plugins_maybe:
-                try:
-                    imported_plugin_module = importlib.import_module(plugin_module_name)
-                    plugin_name = imported_plugin_module.NAME
-                    action = sub_menu.addAction(plugin_name)
-                    plugin_short_description = imported_plugin_module.SHORT_DESCRIPTION
-                    action.setStatusTip(plugin_short_description)
-                    action.setData(plugin_name)
-                except:
-                    pass
-        
-        def create_sub_menu(plugins_group_module, plugins_maybe, menu): 
-            from PyQt4 import QtCore
-            try:
-                imported_plugins_group_module = importlib.import_module(plugins_group_module)
-                plugins_group_name = imported_plugins_group_module.NAME
-                sub_menu = menu.addMenu(plugins_group_name)
-                fill_sub_menu_by(sub_menu, plugins_maybe)
-            except ImportError:
-                comment = QtCore.QCoreApplication.translate(
-                    'rio', 
-                    QtCore.QString('It\'s impossible to import %1').arg(plugins_group_module)
-                )                
-                self._logger.append(comment)
-            except AttributeError:
-                comment = QtCore.QCoreApplication.translate(
-                    'rio', 
-                    QtCore.QString('%1 must have the NAME attribute!').arg(plugins_group_module)
-                )                
-                self._logger.append(comment)
-
         menu.clear()
-        for plugins_group_module, plugins_maybe in self._plugins_groups.iteritems():
-            create_sub_menu(plugins_group_module, plugins_maybe, menu)
+        for plugins_group_name, plugins in self._plugins_groups.iteritems():
+            sub_menu = menu.addMenu(plugins_group_name)
+            actions = QtGui.QActionGroup(sub_menu)
+            self._fill_sub_menu_by(actions, plugins)
+            sub_menu.addActions(actions.actions())
             
+    def _fill_sub_menu_by(self, actions, plugins):
+        for plugin in plugins:
+            action = QtGui.QAction(plugin.NAME, actions)
+            action.setStatusTip(plugin.SHORT_DESCRIPTION)
+            action.setData(plugin)
+            actions.addAction(action)
+            actions.triggered.connect(self.change_plugin)

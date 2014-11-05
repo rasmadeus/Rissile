@@ -15,6 +15,7 @@ class View(QtGui.QMainWindow):
         """       
         QtGui.QMainWindow.__init__(self, parent)
         self._load_ui()
+        self._create_logger()
         self._create_params_view()
         self._bind_actions()
         self._create_plugins()
@@ -23,7 +24,6 @@ class View(QtGui.QMainWindow):
 
     def closeEvent(self, event):
         self._settings.save()
-        self._tr.save_active_rio_locale()
         return QtGui.QMainWindow.closeEvent(self, event)    
     
     def _load_ui(self):
@@ -32,11 +32,16 @@ class View(QtGui.QMainWindow):
         self._ui = uic.loadUiType(path_to_ui)[0]()
         self._ui.setupUi(self)
         
+    def _create_logger(self):
+        from logger import Logger
+        self._logger = Logger(self._ui.online_logger)
+        self._ui.online_logger.setWidget(self._logger)
+        
+        
     def _create_params_view(self):
         from rio.params import view as params_view
         self._params_view = params_view.View(self)
         self._ui.values_setter.setWidget(self._params_view)
-        self._params_view.model().restore_from_params({'car': 10, 'mass': 20})
     
     def _bind_actions(self):
         self._ui.exit.triggered.connect(self.close)
@@ -44,7 +49,8 @@ class View(QtGui.QMainWindow):
     def _create_plugins(self):       
         from plugins.plugins import Plugins
         self._plugins = Plugins()
-        self._plugins._logger = self._ui.logger
+        self._plugins.change_plugin.connect(self._params_view.restore_from_params)
+        self._plugins._logger = self._logger
         self._ui.action_set_dir_search.triggered.connect(self._set_plugins_dir_search_with_user)
         self._update_plugins_menu()
     
@@ -55,6 +61,7 @@ class View(QtGui.QMainWindow):
     def _update_plugins_menu(self):
         self._plugins.find()
         self._plugins.fill_menu(self._ui.menu_open_plugin)
+
         
     def _create_look_and_feel_settings(self):
         from tools import settings
@@ -93,7 +100,6 @@ class View(QtGui.QMainWindow):
         from tr import tr
         self._tr = tr.Translator()
         self._tr.add_translator_agent(self._retranslate)
-        self._tr.restore_active_rio_locale()
         self._tr.fill_with_availaible_translations(self._ui.menu_languages)
 
         

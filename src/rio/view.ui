@@ -64,19 +64,6 @@
      <property name="margin">
       <number>2</number>
      </property>
-     <item>
-      <widget class="QTextEdit" name="logger">
-       <property name="documentTitle">
-        <string/>
-       </property>
-       <property name="undoRedoEnabled">
-        <bool>false</bool>
-       </property>
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
     </layout>
    </widget>
   </widget>
