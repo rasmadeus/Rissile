@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>694</width>
-    <height>448</height>
+    <width>714</width>
+    <height>553</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -34,15 +34,15 @@
    <addaction name="run"/>
    <addaction name="stop"/>
   </widget>
-  <widget class="QDockWidget" name="online_logger">
+  <widget class="QDockWidget" name="online_log">
    <property name="toolTip">
-    <string>Online logger.</string>
+    <string>Online log.</string>
    </property>
    <property name="statusTip">
-    <string>Online logger.</string>
+    <string>Online log.</string>
    </property>
    <property name="whatsThis">
-    <string>Online logger.</string>
+    <string>Online log.</string>
    </property>
    <property name="floating">
     <bool>false</bool>
@@ -64,19 +64,6 @@
      <property name="margin">
       <number>2</number>
      </property>
-     <item>
-      <widget class="QTextEdit" name="logger">
-       <property name="documentTitle">
-        <string/>
-       </property>
-       <property name="undoRedoEnabled">
-        <bool>false</bool>
-       </property>
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
     </layout>
    </widget>
   </widget>
@@ -109,7 +96,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>694</width>
+     <width>714</width>
      <height>21</height>
     </rect>
    </property>
@@ -159,7 +146,7 @@
      </property>
     </widget>
     <addaction name="show_values_setter"/>
-    <addaction name="show_online_logger"/>
+    <addaction name="show_online_log"/>
     <addaction name="menu_languages"/>
    </widget>
    <widget class="QMenu" name="menu_plugins">
@@ -300,7 +287,7 @@
     <string>Show values' setter.</string>
    </property>
   </action>
-  <action name="show_online_logger">
+  <action name="show_online_log">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -308,7 +295,10 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Show online logger</string>
+    <string>Show online log</string>
+   </property>
+   <property name="toolTip">
+    <string>Show online log</string>
    </property>
   </action>
   <action name="stop">
@@ -372,9 +362,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>show_online_logger</sender>
+   <sender>show_online_log</sender>
    <signal>triggered(bool)</signal>
-   <receiver>online_logger</receiver>
+   <receiver>online_log</receiver>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -388,9 +378,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>online_logger</sender>
+   <sender>online_log</sender>
    <signal>visibilityChanged(bool)</signal>
-   <receiver>show_online_logger</receiver>
+   <receiver>show_online_log</receiver>
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">

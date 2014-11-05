@@ -5,13 +5,20 @@
 __author__="K. Kulikov"
 __date__ ="$25.10.2014 19:26:18$"
 
-NAME = u'Stone'
-SHORT_DESCRIPTION = u'This is the simple model of flying stone.'
+NAME = 'Stone'
+SHORT_DESCRIPTION = 'This is the simple model of flying stone.'
 
 from rio import plugins
 
-class Stone(plugins.plugins.Plugin):
+class Plugin(plugins.plugins.Plugin):
     """    
     """
-    pass
+    def get_default_state(self):
+        return {
+            'angle_yaw': 0.0,
+            'angle_pitch': 45.0,
+            'vx0': 10,
+            'vy0': 10,
+            'vz0': 0
+        }
         

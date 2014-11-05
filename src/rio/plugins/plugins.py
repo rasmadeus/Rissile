@@ -3,115 +3,255 @@
 # and open the template in the editor.
 
 __author__="K. Kulikov"
-__date__ ="$18.10.2014 22:38:11$"
+__date__ ="$Nov 23, 2014 4:38:32 PM$"
 
 class Plugin:
+    """
+    """
     def get_default_state(self):
         pass
     
-    def set_initial_state(self, params):
+    def set_initial(self, state):
         pass
     
     def run(self):
+        pass    
+    
+
+class _ModuleContentError(Exception):
+    """
+    """
+    def __init__(self,error_comment):
+        self._error_comment = error_comment
+        
+    def write_comment_error(self, log):
+        log.write_error(self._error_comment)
+
+from PyQt4 import QtCore
+class _Module:
+    """
+    """
+    def __init__(self, log):
+        self._module = None
+        self._log = log
+        
+    def get_module(self):
+        return self._module
+    
+    def is_valid(self):
+        return False if self._module is None else True
+    
+    def load(self, path, attrs = ()):
+        import importlib
+        try:
+            module = importlib.import_module(path)
+            self._valid(module, attrs)
+            self._module = module
+        except ImportError:
+            self._log()
+        except _ModuleContentError as content_error:
+            content_error.write_comment_error(self._log)
+            
+    def _valid(self, module, attrs):
+        for attr_name, attr_type in attrs:
+            self._raise_if_hasnot(module, attr_name)
+            self._raise_if_isnot(module, attr_name, attr_type)
+            
+    def _raise_if_hasnot(self, module, attr_name):
+        if not hasattr(module, attr_name):
+            base_message = QtCore.QCoreApplication.translate('rio', ' hasn\'t attr ')
+            raise _ModuleContentError(str(module) + base_message + attr_name)
+    
+    def _raise_if_isnot(self, module, attr_name, attr_type):
+        attr = getattr(module, attr_name)
+        if not isinstance(attr, attr_type):
+            if not isinstance(attr(), attr_type):
+                base_message = QtCore.QCoreApplication.translate('rio', ' isn\'t ')
+                raise _ModuleContentError(str(module) + '.' + attr_name + base_message + str(attr_type))
+            
+    def _log(self):
+        base_message = QtCore.QCoreApplication.translate('rio', ' isn\'t able for importing.')
+        self._log.write_error(path + base_message)
+
+class _Location:
+    """
+    """
+    def __init__(self, location = ''):
+        self._location = location
+        
+    def get_dirs(self):
+        from tools import imp
+        return imp.get_dirs(self._location)
+    
+    def get_location(self):
+        return self._location
+    
+    def set_location(self, location):
+        self._location = location
+        
+    def get_sub_location(self, subdir):
+        import os
+        return _Location(os.path.join(self._location, subdir))
+    
+class _GroupsLocation(_Location):
+    """
+    """   
+    def set_location(self, location):
+        self._remove_from_sys_path()
+        self._location = location
+        self._append_to_sys_path()
+        
+    def _append_to_sys_path(self):
+        import sys
+        sys.path.append(self._location)
+        
+    def _remove_from_sys_path(self):
+        import sys
+        try:
+            sys.path.remove(self._location)
+        except:
+            pass
+
+class _ModuleContainer:
+    """
+    """
+    def __init__(self, log, location):
+        self._log = log
+        self._location = location
+        self._container = []
+        
+    def _get_attrs(self):
         pass
     
-    def call(self, out_agent):
-        pass   
+    def _get_path(self, dir):
+        pass
+    
+    def _process_valid(self, module, dir):
+        pass
+    
+    def _clear(self):
+        self._container = []
+    
+    def find(self):
+        self._clear()        
+        for dir in self._location.get_dirs():
+            module = _Module(self._log)
+            module.load(self._get_path(dir), self._get_attrs())
+            if module.is_valid():
+                self._process_valid(module.get_module(), dir)
 
+from PyQt4 import QtGui
+class _Group(_ModuleContainer):
+    """
+    """
+    def __init__(self, log, location, path, info_module):
+        _ModuleContainer.__init__(self, log, location)
+        self._path = path
+        self._info_module = info_module
+     
+    def _get_attrs(self):
+        return (('NAME', str), ('SHORT_DESCRIPTION', str), ('Plugin', Plugin))
+    
+    def _get_path(self, dir):
+        return self._path + '.' + dir + '.plugin'
+     
+    def _process_valid(self, module, dir):
+        self._container.append(module)
+        
+    def fill(self, menu, f):
+        sub_menu = menu.addMenu(self._info_module.NAME)
+        actions = QtGui.QActionGroup(sub_menu)
+        for plugin in self._container:
+            action = QtGui.QAction(plugin.NAME, actions)
+            action.setStatusTip(plugin.SHORT_DESCRIPTION)
+            action.setData(plugin)
+            actions.addAction(action)
+            actions.triggered.connect(f)
+        sub_menu.addActions(actions.actions())
 
-
-class Plugins:
+class Groups(_ModuleContainer):
     """    
     """
-    def __init__(self):
+    def __init__(self, log):
+        _ModuleContainer.__init__(self, log, _GroupsLocation())
+        
+    def set_location(self, location):
+        self._location.set_location(location)
+        
+    def get_location(self):
+        return self._location.get_location()
+    
+    def _get_attrs(self):
+        return (('NAME', str),)
+    
+    def _get_path(self, dir):
+        return dir + '.info'
+    
+    def _process_valid(self, module, dir):
+        group = _Group(
+            self._log,
+            self._location.get_sub_location(dir),
+            dir,
+            module
+        )
+        group.find()
+        self._container.append(group)
+        
+    def fill(self, menu, f):
+        for group in self._container:
+            group.fill(menu, f)
+        
+class PluginsManager(QtCore.QObject):
+    """    
+    """
+    location_was_changed = QtCore.pyqtSignal()
+    plugin_was_choosen = QtCore.pyqtSignal(QtGui.QAction)
+    
+    def __init__(self, log, parent):
         from tools import settings
+        QtCore.QObject.__init__(self, parent)
+        self._log = log
+        self._groups = Groups(log)        
         self._settings = settings.Settings(
             (
                 (
-                    '/plugins/dir_search/',
-                    self.get_dir_search,
-                    self.set_dir_search,
+                    '/plugins/location/',
+                    self.get_location,
+                    self.set_location,
                     'string'
                 ),
             )
         )
-        self._settings.read()     
+        self._settings.read()  
+        
+    def set_location(self, location):
+        self._say_that_plugins_searching_is_started()
+        self._groups.set_location(str(location))
+        self._groups.find()
+        self.location_was_changed.emit()
+        self._settings.save()
+        self._say_that_plugins_searching_is_ended()
+        
+    def _say_that_plugins_searching_is_started(self):
+        info = QtCore.QCoreApplication.translate('rio', 'Plugins\' searching is started.')
+        self._log.write_info(info)
     
-    def find(self):    
-        from tools import imp
-        self._plugins_groups = {}
-        for plugins_group_name, plugins_group_path in imp.get_dirs_names_and_absolute_paths(self._dir_search):
-            availaible_dirs_and_paths = imp.get_dirs_names_and_absolute_paths(plugins_group_path)
-            plugins_group_module = plugins_group_name + '.info'
-            self._plugins_groups[plugins_group_module] = []
-            for plugin_name, plugin_path in availaible_dirs_and_paths:
-                plugin_module_path = plugins_group_name + '.' + plugin_name + '.plugin'
-                self._plugins_groups[plugins_group_module].append(plugin_module_path)
-                
-    def set_dir_search(self, dir_search):
-        self.remove_dir_search_from_sys_path()
-        self._dir_search = str(dir_search)
-        self.append_dir_search_to_sys_path()
-   
-    def set_dir_search_with_user(self, dialog_parent):
+    def _say_that_plugins_searching_is_ended(self):
+        info = QtCore.QCoreApplication.translate('rio', 'Plugins\' searching was ended.')
+        self._log.write_info(info)
+        
+    def get_location(self):
+        return self._groups.get_location()
+    
+    def set_location_by_user(self, dialog_parent):
         from PyQt4.QtGui import QFileDialog
-        from PyQt4 import QtCore
-        dialog_title = QtCore.QCoreApplication.translate('rio', QtCore.QString('Choose an initial dir'))
-        dir = QFileDialog.getExistingDirectory(dialog_parent, dialog_title, self._dir_search)  
+        dialog_title = QtCore.QCoreApplication.translate('rio', 'Choose an initial dir')
+        dir = QFileDialog.getExistingDirectory(dialog_parent, dialog_title, self.get_location())  
         if not dir.isEmpty():
-            self.set_dir_search(dir)
-            self._settings.save()        
-        
-    def append_dir_search_to_sys_path(self):
-        import sys
-        sys.path.append(self._dir_search)
-        
-    def remove_dir_search_from_sys_path(self):
-        import sys
-        try:
-            sys.path.remove(self._dir_search)
-        except:
-            pass
-        
-    def get_dir_search(self):
-        return self._dir_search
-    
-    def fill_menu(self, menu):
-        import importlib
-        
-        def fill_sub_menu_by(sub_menu, plugins_maybe):
-            for plugin_module_name in plugins_maybe:
-                try:
-                    imported_plugin_module = importlib.import_module(plugin_module_name)
-                    plugin_name = imported_plugin_module.NAME
-                    action = sub_menu.addAction(plugin_name)
-                    plugin_short_description = imported_plugin_module.SHORT_DESCRIPTION
-                    action.setStatusTip(plugin_short_description)
-                    action.setData(plugin_name)
-                except:
-                    pass
-        
-        def create_sub_menu(plugins_group_module, plugins_maybe, menu): 
-            from PyQt4 import QtCore
-            try:
-                imported_plugins_group_module = importlib.import_module(plugins_group_module)
-                plugins_group_name = imported_plugins_group_module.NAME
-                sub_menu = menu.addMenu(plugins_group_name)
-                fill_sub_menu_by(sub_menu, plugins_maybe)
-            except ImportError:
-                comment = QtCore.QCoreApplication.translate(
-                    'rio', 
-                    QtCore.QString('It\'s impossible to import %1').arg(plugins_group_module)
-                )                
-                self._logger.append(comment)
-            except AttributeError:
-                comment = QtCore.QCoreApplication.translate(
-                    'rio', 
-                    QtCore.QString('%1 must have the NAME attribute!').arg(plugins_group_module)
-                )                
-                self._logger.append(comment)
-
-        menu.clear()
-        for plugins_group_module, plugins_maybe in self._plugins_groups.iteritems():
-            create_sub_menu(plugins_group_module, plugins_maybe, menu)
+            self.set_location(dir)
             
+    def fill(self, menu):
+        menu.clear()
+        self._groups.fill(menu, self.plugin_was_choosen)
+    
+

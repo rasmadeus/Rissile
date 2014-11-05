@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 
 
 __author__="K. Kulikov"
@@ -15,15 +15,15 @@ class View(QtGui.QMainWindow):
         """       
         QtGui.QMainWindow.__init__(self, parent)
         self._load_ui()
+        self._create_log()
         self._create_params_view()
         self._bind_actions()
-        self._create_plugins()
         self._create_look_and_feel_settings()   
         self._create_translator()
+        self._create_plugins_manager()
 
     def closeEvent(self, event):
         self._settings.save()
-        self._tr.save_active_rio_locale()
         return QtGui.QMainWindow.closeEvent(self, event)    
     
     def _load_ui(self):
@@ -32,30 +32,20 @@ class View(QtGui.QMainWindow):
         self._ui = uic.loadUiType(path_to_ui)[0]()
         self._ui.setupUi(self)
         
+    def _create_log(self):
+        from log import Log
+        self._log = Log(self._ui.online_log)
+        self._ui.online_log.setWidget(self._log)
+        
+        
     def _create_params_view(self):
         from rio.params import view as params_view
         self._params_view = params_view.View(self)
         self._ui.values_setter.setWidget(self._params_view)
-        self._params_view.model().restore_from_params({'car': 10, 'mass': 20})
     
     def _bind_actions(self):
         self._ui.exit.triggered.connect(self.close)
     
-    def _create_plugins(self):       
-        from plugins.plugins import Plugins
-        self._plugins = Plugins()
-        self._plugins._logger = self._ui.logger
-        self._ui.action_set_dir_search.triggered.connect(self._set_plugins_dir_search_with_user)
-        self._update_plugins_menu()
-    
-    def _set_plugins_dir_search_with_user(self):
-        self._plugins.set_dir_search_with_user(self)
-        self._update_plugins_menu()
-    
-    def _update_plugins_menu(self):
-        self._plugins.find()
-        self._plugins.fill_menu(self._ui.menu_open_plugin)
-        
     def _create_look_and_feel_settings(self):
         from tools import settings
         self._settings = settings.Settings(
@@ -79,9 +69,9 @@ class View(QtGui.QMainWindow):
                     'bool'
                 ),
                 (
-                    'view/online_logger_visibility', 
-                    self._ui.online_logger.isVisible, 
-                    self._ui.show_online_logger.setChecked, 
+                    'view/online_log_visibility', 
+                    self._ui.online_log.isVisible, 
+                    self._ui.show_online_log.setChecked, 
                     'bool'
                 )        
             )
@@ -93,9 +83,23 @@ class View(QtGui.QMainWindow):
         from tr import tr
         self._tr = tr.Translator()
         self._tr.add_translator_agent(self._retranslate)
-        self._tr.restore_active_rio_locale()
         self._tr.fill_with_availaible_translations(self._ui.menu_languages)
 
         
     def _retranslate(self):
         self._ui.retranslateUi(self)
+
+    def _create_plugins_manager(self):
+        from plugins import plugins
+        self._plugins_manager = plugins.PluginsManager(self._log, self)
+        self._ui.action_set_dir_search.triggered.connect(
+            lambda: self._plugins_manager.set_location_by_user(self)
+        )
+        self._plugins_manager.location_was_changed.connect(
+            lambda: self._plugins_manager.fill(self._ui.menu_open_plugin)
+        )
+        self._plugins_manager.plugin_was_choosen.connect(
+            lambda action: self._params_view.restore_from_action(action)
+        )
+        self._plugins_manager.fill(self._ui.menu_open_plugin)
+

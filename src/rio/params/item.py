@@ -476,7 +476,7 @@ class Root(Item):
         :param params: Иерархичная структура, которую будет повторять self.
         :type params: dict
         """
-        self.clear_parts()
+        self.clear_parts()        
         for id, value in params.iteritems():
             if isinstance(value, dict):
                 part = Root(id, self)
@@ -485,7 +485,7 @@ class Root(Item):
                 item = ValueForGenerator(id, 'const generator', self)
                 item.part(0).set_value(value)
                 
-
+                
     def generator(self):
         """
         :return: генератор исходных данных, в соответствии с иерархией self.

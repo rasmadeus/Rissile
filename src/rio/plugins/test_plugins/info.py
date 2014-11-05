@@ -5,4 +5,4 @@
 __author__="K.Kulikov"
 __date__ ="$25.10.2014 19:35:06$"
 
-NAME = u'Test models'
+NAME = 'Test models'

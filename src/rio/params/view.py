@@ -32,7 +32,9 @@ class View(QtGui.QTreeView):
         if index.column() == 0: # Первый столбец - комментарий к свойству, не редактируется.
             return
         self.edit(index)
-
-
-
+        
+    def restore_from_action(self, action):
+        module = action.data().toPyObject()
+        plugin = module.Plugin()
+        self.model().restore_from_params(plugin.get_default_state())
 
