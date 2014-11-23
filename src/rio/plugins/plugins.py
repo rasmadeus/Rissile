@@ -155,8 +155,13 @@ class _Group(_ModuleContainer):
     def _get_path(self, dir):
         return self._path + '.' + dir + '.plugin'
      
-    def _process_valid(self, module, dir):
+    def _process_valid(self, module, dir):  
+        self._say_that_plugin_was_found(module)
         self._container.append(module)
+        
+    def _say_that_plugin_was_found(self, module):
+        info = QtCore.QCoreApplication.translate('rio', ' was found.')
+        self._log.write_info(str(module) + info)
         
     def fill(self, menu, f):
         sub_menu = menu.addMenu(self._info_module.NAME)
