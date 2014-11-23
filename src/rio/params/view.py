@@ -33,8 +33,18 @@ class View(QtGui.QTreeView):
             return
         self.edit(index)
         
+<<<<<<< HEAD
     def restore_from_action(self, action):
         module = action.data().toPyObject()
         plugin = module.Plugin()
         self.model().restore_from_params(plugin.get_default_state())
+=======
+    def restore_from_params(self, action):
+        module = action.data().toPyObject()
+        plugin = module.Plugin()
+        self.model().restore_from_params(plugin.get_default_state())
+
+
+
+>>>>>>> d156491f5d9cc188feca0463f0a91611c433110d
 

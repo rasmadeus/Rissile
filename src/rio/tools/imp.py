@@ -9,6 +9,7 @@ def create_path_to_module(current_dir_path, file_name):
     path_to_module = '.'.join([current_dir_path, file_name.split('.')[0]])
     return  path_to_module[2:].replace('\\','.')
 
+<<<<<<< HEAD
 def import_module(path_to_module):
      import importlib
      try:
@@ -16,6 +17,15 @@ def import_module(path_to_module):
         return module
      except:
         return  None
+=======
+def import_module(path_to_module, modules):
+     import importlib
+     try:
+        module = importlib.import_module(path_to_module)
+        modules.append(module)
+     except:
+        pass
+>>>>>>> d156491f5d9cc188feca0463f0a91611c433110d
 
 def get_all_imported_modules(start_path, pattern='\S+\.py'):
     def is_file_desired(file_name, pattern):
@@ -31,6 +41,7 @@ def get_all_imported_modules(start_path, pattern='\S+\.py'):
         for file_name in files_name:
             if is_file_desired(file_name, pattern):
                 path_to_module = create_path_to_module(current_dir_path, file_name)
+<<<<<<< HEAD
                 module = import_module(path_to_module)
                 if module is not None:
                     yield module
@@ -44,3 +55,21 @@ def get_dirs(start_path):
                 yield file_or_dir
     except WindowsError:
         pass                
+=======
+                import_module(path_to_module, modules)
+    return modules
+
+def get_dirs_names_and_absolute_paths(start_absolute_path):
+    import os
+    dirs_names_and_paths = []
+    try:
+        for file_or_dir_name in os.listdir(start_absolute_path):
+            absolute_file_or_dir_path = os.path.join(start_absolute_path, file_or_dir_name)
+            if os.path.isdir(absolute_file_or_dir_path):
+                dirs_names_and_paths.append((file_or_dir_name, absolute_file_or_dir_path))
+    except WindowsError:
+        pass
+    return dirs_names_and_paths
+
+
+>>>>>>> d156491f5d9cc188feca0463f0a91611c433110d

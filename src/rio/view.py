@@ -15,7 +15,11 @@ class View(QtGui.QMainWindow):
         """       
         QtGui.QMainWindow.__init__(self, parent)
         self._load_ui()
+<<<<<<< HEAD
         self._create_log()
+=======
+        self._create_logger()
+>>>>>>> d156491f5d9cc188feca0463f0a91611c433110d
         self._create_params_view()
         self._bind_actions()
         self._create_look_and_feel_settings()   
@@ -32,10 +36,17 @@ class View(QtGui.QMainWindow):
         self._ui = uic.loadUiType(path_to_ui)[0]()
         self._ui.setupUi(self)
         
+<<<<<<< HEAD
     def _create_log(self):
         from log import Log
         self._log = Log(self._ui.online_log)
         self._ui.online_log.setWidget(self._log)
+=======
+    def _create_logger(self):
+        from logger import Logger
+        self._logger = Logger(self._ui.online_logger)
+        self._ui.online_logger.setWidget(self._logger)
+>>>>>>> d156491f5d9cc188feca0463f0a91611c433110d
         
         
     def _create_params_view(self):
@@ -46,6 +57,26 @@ class View(QtGui.QMainWindow):
     def _bind_actions(self):
         self._ui.exit.triggered.connect(self.close)
     
+<<<<<<< HEAD
+=======
+    def _create_plugins(self):       
+        from plugins.plugins import Plugins
+        self._plugins = Plugins()
+        self._plugins.change_plugin.connect(self._params_view.restore_from_params)
+        self._plugins._logger = self._logger
+        self._ui.action_set_dir_search.triggered.connect(self._set_plugins_dir_search_with_user)
+        self._update_plugins_menu()
+    
+    def _set_plugins_dir_search_with_user(self):
+        self._plugins.set_dir_search_with_user(self)
+        self._update_plugins_menu()
+    
+    def _update_plugins_menu(self):
+        self._plugins.find()
+        self._plugins.fill_menu(self._ui.menu_open_plugin)
+
+        
+>>>>>>> d156491f5d9cc188feca0463f0a91611c433110d
     def _create_look_and_feel_settings(self):
         from tools import settings
         self._settings = settings.Settings(
@@ -88,6 +119,7 @@ class View(QtGui.QMainWindow):
         
     def _retranslate(self):
         self._ui.retranslateUi(self)
+<<<<<<< HEAD
 
     def _create_plugins_manager(self):
         from plugins import plugins
@@ -103,3 +135,5 @@ class View(QtGui.QMainWindow):
         )
         self._plugins_manager.fill(self._ui.menu_open_plugin)
 
+=======
+>>>>>>> d156491f5d9cc188feca0463f0a91611c433110d
