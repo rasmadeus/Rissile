@@ -1,0 +1,13 @@
+eclipse.preferences.version=1
+encoding//src/rissile/rio/main.py=utf-8
+encoding//src/rissile/rio/params/item.py=utf-8
+encoding//src/rissile/rio/params/params_generator.py=utf-8
+encoding//src/rissile/rio/params/test_item.py=utf-8
+encoding//src/rissile/rio/params/test_params_generator.py=utf-8
+encoding//src/rissile/rio/params/view.py=utf-8
+encoding//src/rissile/rio/view.py=utf-8
+encoding//src/rissile/ris/tools/cpoint/meet.py=utf-8
+encoding//src/rissile/ris/tools/cpoint/test_meet.py=utf-8
+encoding//src/rissile/ris/tools/vector.py=utf-8
+encoding//src/rissile/tests.py=utf-8
+encoding/<project>=UTF-8
