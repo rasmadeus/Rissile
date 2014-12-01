@@ -8,8 +8,6 @@ __date__ ="$Nov 23, 2014 4:38:32 PM$"
 class Plugin:
     """
     """
-    def __init__(self):
-        self._alive = False
         
     def get_default_state(self):
         return {}
@@ -18,18 +16,18 @@ class Plugin:
         pass
     
     def run(self):
-        self._alive = True
-        while self.is_alive():
-            self._run()
+        while self.must_live_until():
+            self._run
     
     def save_states(self):
         pass
     
-    def is_alive(self):
-        return self._alive
+    def must_live_until(self):
+        return True    
     
-    def stop(self):
-        self._alive = False
+    def __call__(self, initial_state):
+        self.set_initial(initial_state)
+        self.run()
         
     def _run(self):
         pass
@@ -123,7 +121,6 @@ class _GroupsLocation(_Location):
         
     def _append_to_sys_path(self):
         import sys
-        print(self._location)
         sys.path.append(self._location)
         
     def _remove_from_sys_path(self):
@@ -234,10 +231,13 @@ class PluginsManager(QtCore.QObject):
     plugin_was_choosen = QtCore.pyqtSignal(QtGui.QAction)
     
     def __init__(self, log, parent):
-        from rissile.rio.tools import settings
         QtCore.QObject.__init__(self, parent)
         self._log = log
-        self._groups = Groups(log)        
+        self._groups = Groups(log)      
+        self._create_settings()
+        
+    def _create_settings(self):
+        from rissile.rio.tools import settings
         self._settings = settings.Settings(
             (
                 (
@@ -248,7 +248,7 @@ class PluginsManager(QtCore.QObject):
                 ),
             )
         )
-        self._settings.read()  
+        self._settings.read() 
         
     def set_location(self, location):
         self._say_that_plugins_searching_is_started()
@@ -279,5 +279,3 @@ class PluginsManager(QtCore.QObject):
     def fill(self, menu):
         menu.clear()
         self._groups.fill(menu, self.plugin_was_choosen)
-    
-

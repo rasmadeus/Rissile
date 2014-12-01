@@ -9,7 +9,10 @@ __date__ ="$25.10.2014 19:25:52$"
 NAME = 'Shop'
 SHORT_DESCRIPTION = 'This is imitation a simple shop\'s activity'
 
-from rio.plugins import plugins
+from rissile.rio.plugins import plugins
 
 class Plugin(plugins.Plugin):
-    pass
+    """
+    """
+    def _run(self):
+        print('I am shop')

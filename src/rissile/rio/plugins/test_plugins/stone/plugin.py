@@ -8,7 +8,7 @@ __date__ ="$25.10.2014 19:26:18$"
 NAME = 'Stone'
 SHORT_DESCRIPTION = 'This is the simple model of flying stone.'
 
-from rio.plugins import plugins
+from rissile.rio.plugins import plugins
 
 class Plugin(plugins.Plugin):
     """    
@@ -21,5 +21,10 @@ class Plugin(plugins.Plugin):
             'vy0': 10,
             'vz0': 0
         }
+        
+    def must_live_until(self):
+        return False
+    
+    
 
         

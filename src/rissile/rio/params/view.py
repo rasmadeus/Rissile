@@ -22,9 +22,8 @@ class View(QtGui.QTreeView):
         if index.internalPointer().is_editable(index.column()):
             self.edit(index) 
         
-    def restore_from_action(self, action):
-        module = action.data().toPyObject()
-        plugin = module.Plugin()
+    def restore_from_plugin(self, plugin_module):
+        plugin = plugin_module.Plugin()
         self.model().restore_from_params(plugin.get_default_state())
         
     def generator(self):

@@ -20,7 +20,9 @@ class View(QtGui.QMainWindow):
         self._bind_actions()
         self._create_look_and_feel_settings()   
         self._create_translator()
+        self._create_plugins_executor()
         self._create_plugins_manager()
+
 
     def closeEvent(self, event):
         self._settings.save()
@@ -109,11 +111,9 @@ class View(QtGui.QMainWindow):
         from plugins import plugins
         self._plugins_manager = plugins.PluginsManager(self._log, self)
         self._plugins_manager.location_was_changed.connect(self._fill_plugins_menu)
-        self._plugins_manager.plugin_was_choosen.connect(self._params_view.restore_from_action)
-        self._plugins_manager.plugin_was_choosen.connect(self._give_plugin_to_executor)
+        self._plugins_manager.plugin_was_choosen.connect(self._notify_parts_about_new_plugin)
         self._plugins_manager.fill(self._ui.menu_open_plugin) 
         self._ui.action_set_dir_search.triggered.connect(self._set_plugins_location_by_user)
-        self._ui.run.triggered.connect(self._create_executor)
         
     def _set_plugins_location_by_user(self):
         self._plugins_manager.set_location_by_user(self)
@@ -121,11 +121,25 @@ class View(QtGui.QMainWindow):
     def _fill_plugins_menu(self):
         self._plugins_manager.fill(self._ui.menu_open_plugin)
         
-    def _give_plugin_to_executor(self, action):
-        self._plugin = action.data().toPyObject()
+    def _notify_parts_about_new_plugin(self, action):
+        plugin_module = action.data().toPyObject()
+        self._params_view.restore_from_plugin(plugin_module)
+        self._executor.set_plugin(plugin_module)
         
-    def _create_executor(self):
-        from multiprocessing import Process
-        from plugins.executor import f
-        p = Process(target=f, args=(4343,))
-        p.start()
+    def _lock_interface(self):
+        self._ui.run.setEnabled(False)
+        self._ui.stop.setEnabled(True)
+        self._ui.menu_plugins.setEnabled(False)
+    
+    def _unlock_interface(self):
+        self._ui.run.setEnabled(True)
+        self._ui.stop.setEnabled(False)
+        self._ui.menu_plugins.setEnabled(True)
+        
+    def _create_plugins_executor(self):
+        from rissile.rio.plugins import executor
+        self._executor = executor.Executor(self._log, self._params_view.generator, self)
+        self._executor.start_running.connect(self._lock_interface)
+        self._executor.stop_running.connect(self._unlock_interface)
+        self._ui.run.triggered.connect(self._executor.run)
+        self._ui.stop.triggered.connect(self._executor.stop)
