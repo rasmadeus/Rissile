@@ -17,7 +17,7 @@ class Plugin:
     
     def run(self):
         while self.must_live_until():
-            self._run
+            self._run()
     
     def save_states(self):
         pass
@@ -25,8 +25,9 @@ class Plugin:
     def must_live_until(self):
         return True    
     
+    
     def __call__(self, initial_state):
-        self.set_initial(initial_state)
+        self.set_initial(initial_state['Model\'s params'])
         self.run()
         
     def _run(self):
@@ -40,7 +41,7 @@ class _ModuleContentError(Exception):
         self._error_comment = error_comment
         
     def write_comment_error(self, log):
-        log.write_error(self._error_comment)
+        log.error(self._error_comment)
 
 from PyQt4 import QtCore
 class _Module:
@@ -89,7 +90,7 @@ class _Module:
             
     def _say_about_import_error(self, path):
         base_message = QtCore.QCoreApplication.translate('rio', ' isn\'t able for importing.')
-        self._log.write_error(path + base_message)
+        self._log.error(path + base_message)
 
 class _Location:
     """
@@ -179,7 +180,7 @@ class _Group(_ModuleContainer):
         
     def _say_that_plugin_was_found(self, module):
         info = QtCore.QCoreApplication.translate('rio', ' was found.')
-        self._log.write_info(str(module) + info)
+        self._log.info(str(module) + info)
         
     def fill(self, menu, f):
         sub_menu = menu.addMenu(self._info_module.NAME)
@@ -236,20 +237,6 @@ class PluginsManager(QtCore.QObject):
         self._groups = Groups(log)      
         self._create_settings()
         
-    def _create_settings(self):
-        from rissile.rio.tools import settings
-        self._settings = settings.Settings(
-            (
-                (
-                    '/plugins/location/',
-                    self.get_location,
-                    self.set_location,
-                    'string'
-                ),
-            )
-        )
-        self._settings.read() 
-        
     def set_location(self, location):
         self._say_that_plugins_searching_is_started()
         self._groups.set_location(str(location))
@@ -257,14 +244,6 @@ class PluginsManager(QtCore.QObject):
         self.location_was_changed.emit()
         self._settings.save()
         self._say_that_plugins_searching_is_ended()
-        
-    def _say_that_plugins_searching_is_started(self):
-        info = QtCore.QCoreApplication.translate('rio', 'Plugins\' searching is started.')
-        self._log.write_info(info)
-    
-    def _say_that_plugins_searching_is_ended(self):
-        info = QtCore.QCoreApplication.translate('rio', 'Plugins\' searching was ended.')
-        self._log.write_info(info)
         
     def get_location(self):
         return self._groups.get_location()
@@ -279,3 +258,25 @@ class PluginsManager(QtCore.QObject):
     def fill(self, menu):
         menu.clear()
         self._groups.fill(menu, self.plugin_was_choosen)
+        
+    def _say_that_plugins_searching_is_started(self):
+        info = QtCore.QCoreApplication.translate('rio', 'Plugins\' searching is started.')
+        self._log.info(info)
+    
+    def _say_that_plugins_searching_is_ended(self):
+        info = QtCore.QCoreApplication.translate('rio', 'Plugins\' searching was ended.')
+        self._log.info(info)
+        
+    def _create_settings(self):
+        from rissile.rio.tools import settings
+        self._settings = settings.Settings((self._get_location_settings(),))
+        self._settings.read() 
+        
+    def _get_location_settings(self):
+        return \
+        ( \
+            '/plugins/location/', \
+            self.get_location, \
+            self.set_location,
+            'string' \
+        )

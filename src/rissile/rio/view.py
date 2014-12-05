@@ -25,6 +25,7 @@ class View(QtGui.QMainWindow):
 
 
     def closeEvent(self, event):
+        self._plugin_executor.stop()
         self._settings.save()
         return QtGui.QMainWindow.closeEvent(self, event)    
     
@@ -124,7 +125,7 @@ class View(QtGui.QMainWindow):
     def _notify_parts_about_new_plugin(self, action):
         plugin_module = action.data().toPyObject()
         self._params_view.restore_from_plugin(plugin_module)
-        self._executor.set_plugin(plugin_module)
+        self._plugin_executor.set_plugin_module(plugin_module)
         
     def _lock_interface(self):
         self._ui.run.setEnabled(False)
@@ -137,9 +138,9 @@ class View(QtGui.QMainWindow):
         self._ui.menu_plugins.setEnabled(True)
         
     def _create_plugins_executor(self):
-        from rissile.rio.plugins import executor
-        self._executor = executor.Executor(self._log, self._params_view.generator, self)
-        self._executor.start_running.connect(self._lock_interface)
-        self._executor.stop_running.connect(self._unlock_interface)
-        self._ui.run.triggered.connect(self._executor.run)
-        self._ui.stop.triggered.connect(self._executor.stop)
+        from rissile.rio.plugins import solver
+        self._plugin_executor = solver.PluginExecutor(self._log, self._params_view.generator, self)
+        self._plugin_executor.start_running.connect(self._lock_interface)
+        self._plugin_executor.stop_running.connect(self._unlock_interface)
+        self._ui.run.triggered.connect(self._plugin_executor.run)
+        self._ui.stop.triggered.connect(self._plugin_executor.stop)

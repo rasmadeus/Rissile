@@ -15,4 +15,4 @@ class Plugin(plugins.Plugin):
     """
     """
     def _run(self):
-        print('I am shop')
+        print('I am a shop')
